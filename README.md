@@ -1,13 +1,9 @@
 # Wakanda-Bazeng-Lab
-## Purpose🛡
+## Purpose
 The Wakanda Bazeng (a slang in Swahili meaning Big Boss) Lab is an Adversarial Simulation Lab platform that uses ```terraform``` to automate the process of whipping up a lab infrastructure to practice various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. 
 
 I just added some additional sprinkles to their work from my other researches.
 
-## Demo 📺
-[A short demo (< 3 min)](https://www.youtube.com/watch?v=yE7ytM3VNDQ) which shows the basic functions of the lab infrastructure and how it builds a testing environment using terraform.
-
-[![Attack Range Demo](https://img.youtube.com/vi/yE7ytM3VNDQ/1.jpg)](https://www.youtube.com/watch?v=yE7ytM3VNDQ)
 ## Attacks Covered
 - Kerberoasting
 - ASRepRoasting
@@ -28,7 +24,7 @@ I just added some additional sprinkles to their work from my other researches.
 - All the default things like lateral movement, persistence, pass the hash, pass the ticket, golden tickets, silver tickets etc
 - Vulnerable web applications for exploitation
 
-## Architecture 🏯
+## Architecture
 The deployment of Wakanda Bazeng environment consist of:
 - Two Subnets
 - Windows Domain Controller for the Child Domain (first.local)
@@ -39,7 +35,7 @@ The deployment of Wakanda Bazeng environment consist of:
 - Debian Server serving as Web Server 1 - OWASP's Juice Shop deployed via Docker
 - Debian Server serving as Web Server 2 - Vulnerable Tomcat deployed via Docker
 
-## Installation 🏗
+## Installation
 ```
 Terraform
 Install terraform
@@ -67,7 +63,7 @@ Can use this key pair to get the administrator default password from AWS
 
 Once you run the terraform, it will take some time to provivision everything so give it about 30 mins to an hour and you should be good to go.
 ```
-## Running the lab 🏃‍♀️
+## Running the lab
 You can take the following steps in running the lab:
 
 ### Initialize terraform
