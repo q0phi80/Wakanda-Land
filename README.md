@@ -34,7 +34,7 @@ The deployment of Wakanda Bazeng environment consist of:
 - Windows Domain Controller for the Child Domain (first.local)
 - Windows Domain Controller for the Parent Domain (second.local)
 - Windows Server in the Child Domain - this serves as a victim machine for the initial access
-- Kali Machine - Covenant C2 is bootstrapped in
+- Kali Machine - Covenant C2 is bootstrapped in and can be access on port 7443
 - Debian Server running an Apache Guacamole service - Kali GUI and Windows Server RDP are bootstrapped during deploymnet
 - Debian Server serving as Web Server 1 - OWASP's Juice Shop deployed via Docker
 - Debian Server serving as Web Server 2 - Vulnerable Tomcat deployed via Docker
