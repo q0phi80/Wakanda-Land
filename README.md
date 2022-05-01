@@ -68,7 +68,7 @@ Store the file ./terraform/keys/terraform-key.pub
 Update the file in the vars.tf to point to that public key (which will assign it to the created EC2 instances)
 Can use this key pair to get the administrator default password from AWS
 
-Once you run the terraform, it will take some time to provivision everything, so give it about 30 mins to an hour and you should be good to go.
+Once you run the terraform, it will take some time to provision everything, so give it about 30 mins to an hour and you should be good to go.
 ```
 ## Running the lab
 You can take the following steps in running the lab:
