@@ -102,44 +102,17 @@ resource "aws_instance" "user-server" {
   subnet_id                   = aws_subnet.first-vpc-subnet.id
   private_ip                  = var.USER_SERVER_IP
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
+  user_data                   = file("./scripts/ChocolateyInstallNonAdmin.ps1")
 
   tags = {
     Workspace = "${terraform.workspace}"
     Name      = "${terraform.workspace}-User-Server"
   }
-
+  
   vpc_security_group_ids = [
     aws_security_group.first-sg.id,
   ]
 }
-/* resource "time_sleep" "wait_30_mins" {
-  depends_on      = [aws_instance.user-server]
-  create_duration = "30m"
-}
-resource "null_resource" "user-server-setup" {
-  depends_on = [time_sleep.wait_30_mins]
-
-  connection {
-    type     = "winrm"
-    user     = var.WinRM_USER
-    password = var.WinRM_PASSWORD
-    host     = aws_instance.user-server.public_ip
-    port     = 5985
-    insecure = true
-    https = true
-    timeout  = "10m"
-    use_ntlm = true
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "mkdir toolz",
-    ]
-  }
-  provisioner "local-exec" {
-    command = "Get-Date > completed.txt"
-    interpreter = ["PowerShell", "-Command"]
-  }
-} */
 
 # The User Windows 10 workstation which will be main foothold
 resource "aws_instance" "user-workstation" {
