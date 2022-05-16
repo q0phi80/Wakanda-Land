@@ -219,7 +219,7 @@ resource "null_resource" "web-server-1-setup" {
     agent       = false
   }
   provisioner "file" {
-    source      = "./web1-setup.sh"
+    source      = "./scripts/web1-setup.sh"
     destination = "/tmp/web1-setup.sh"
   }
 
@@ -267,11 +267,11 @@ resource "null_resource" "web-server-2-setup" {
   }
 
   provisioner "file" {
-    source      = "./vuln-install.sh"
+    source      = "./scripts/vuln-install.sh"
     destination = "/tmp/vuln-install.sh"
   }
- 
-  provisioner "remote-exec" {    
+
+  provisioner "remote-exec" {
     inline = [
       "sleep 10",
       "sudo chmod +x /tmp/vuln-install.sh",
@@ -331,7 +331,7 @@ resource "null_resource" "guac-server-setup" {
   }
 
   provisioner "file" {
-    source      = "./guac-setup.sh"
+    source      = "./scripts/guac-setup.sh"
     destination = "/tmp/guac-setup.sh"
   }
 
@@ -380,7 +380,7 @@ resource "null_resource" "attacker-kali-setup" {
   }
 
   provisioner "file" {
-    source      = "./kali-setup.sh"
+    source      = "./scripts/kali-setup.sh"
     destination = "/tmp/kali-setup.sh"
   }
   provisioner "remote-exec" {
@@ -647,15 +647,6 @@ resource "aws_ssm_parameter" "asrep-user-ssm-parameter" {
   name  = "asrep.user"
   type  = "SecureString"
   value = "{\"Username\":\"asrep.user\", \"Password\":\"Password@1\"}"
-}
-
-/* output "guac-server_ip" {
-  value       = aws_instance.guac-server.public_ip
-  description = "Public IP of Guacamole Server. Access this at <ip-address:8080/guacamole>"
-} */
-
-output "timestamp" {
-  value = formatdate("hh:mm", timestamp())
 }
 
 # Apply our DSC via SSM to first.local
