@@ -54,7 +54,7 @@ resource "aws_subnet" "second-vpc-subnet" {
   }
 }
 
-# Set DHCP options for delivering things like DNS servers
+# Set DHCP options for delivering things such as DNS servers
 resource "aws_vpc_dhcp_options" "first-dhcp" {
   domain_name          = "first.local"
   domain_name_servers  = [var.FIRST_DC_IP, var.PUBLIC_DNS]
@@ -218,24 +218,16 @@ resource "null_resource" "web-server-1-setup" {
     private_key = file(var.PATH_TO_PRIVATE_KEY)
     agent       = false
   }
-  /* provisioner "file" {
-    source      = "vuln-install.sh"
-    destination = "/tmp/vuln-install.sh"
-  } */
+  provisioner "file" {
+    source      = "./web1-setup.sh"
+    destination = "/tmp/web1-setup.sh"
+  }
 
   provisioner "remote-exec" {
     inline = [
-      "export DEBIAN_FRONTEND=noninteractive",
-      "sudo apt-get -qy -o \"Dpkg::Options::=--force-confdef\" -o \"Dpkg::Options::=--force-confold\" upgrade",
-      "sudo apt-get remove docker docker-engine docker.io containerd runc",
-      "curl -fsSL https://get.docker.com -o get-docker.sh",
-      "sudo sh get-docker.sh",
-      "sudo apt install git -y",
-      "sudo curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose",
-      "sudo chmod +x /usr/local/bin/docker-compose",
-      "git clone https://github.com/vulhub/vulhub.git",
-      "sudo docker pull bkimminich/juice-shop",
-      "sudo docker run -d -p 3000:3000 bkimminich/juice-shop",
+      "sleep 10",
+      "sudo chmod +x /tmp/web1-setup.sh",
+      "sudo /tmp/web1-setup.sh",
     ]
   }
 }
@@ -258,6 +250,10 @@ resource "aws_instance" "web-server-2" {
   vpc_security_group_ids = [
     aws_security_group.first-sg.id,
   ]
+  root_block_device {
+    delete_on_termination = true
+    volume_size           = 100
+  }
 }
 
 resource "null_resource" "web-server-2-setup" {
@@ -270,19 +266,16 @@ resource "null_resource" "web-server-2-setup" {
     agent       = false
   }
 
-  provisioner "remote-exec" {
+  provisioner "file" {
+    source      = "./vuln-install.sh"
+    destination = "/tmp/vuln-install.sh"
+  }
+ 
+  provisioner "remote-exec" {    
     inline = [
-      "export DEBIAN_FRONTEND=noninteractive",
-      "sudo apt-get -qy -o \"Dpkg::Options::=--force-confdef\" -o \"Dpkg::Options::=--force-confold\" upgrade",
-      "sudo apt-get remove docker docker-engine docker.io containerd runc",
-      "curl -fsSL https://get.docker.com -o get-docker.sh",
-      "sudo sh get-docker.sh",
-      "sudo apt install git -y",
-      "sudo curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose",
-      "sudo chmod +x /usr/local/bin/docker-compose",
-      "git clone https://github.com/vulhub/vulhub.git",
-      "cd vulhub/tomcat/tomcat8/",
-      "sudo docker-compose up -d",
+      "sleep 10",
+      "sudo chmod +x /tmp/vuln-install.sh",
+      "sudo /tmp/vuln-install.sh start",
     ]
   }
 }
@@ -337,21 +330,16 @@ resource "null_resource" "guac-server-setup" {
     agent       = false
   }
 
+  provisioner "file" {
+    source      = "./guac-setup.sh"
+    destination = "/tmp/guac-setup.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
-      "export DEBIAN_FRONTEND=noninteractive",
-      "sudo apt-get -qy -o \"Dpkg::Options::=--force-confdef\" -o \"Dpkg::Options::=--force-confold\" upgrade",
-      "sudo apt-get remove docker docker-engine docker.io containerd runc",
-      "curl -fsSL https://get.docker.com -o get-docker.sh",
-      "sudo sh get-docker.sh",
-      "sudo apt install git -y",
-      "sudo curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose",
-      "sudo chmod +x /usr/local/bin/docker-compose",
-      "git clone https://github.com/q0phi80/guacamole.git",
-      "cd guacamole",
-      "sudo ./bin/prepare_initdb.sh",
-      "sudo docker-compose up -d guacamole mysql guacd",
-      "sudo docker-compose up -d",
+      "sleep 10",
+      "sudo chmod +x /tmp/guac-setup.sh",
+      "sudo /tmp/guac-setup.sh",
     ]
   }
 }
@@ -391,33 +379,15 @@ resource "null_resource" "attacker-kali-setup" {
     agent       = false
   }
 
+  provisioner "file" {
+    source      = "./kali-setup.sh"
+    destination = "/tmp/kali-setup.sh"
+  }
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update",
-      "DEBIAN_FRONTEND=noninteractive sudo apt-get --yes --force-yes install kali-desktop-xfce xorg xrdp",
-      "sudo sed -i 's/port=3389/port=3390/g' /etc/xrdp/xrdp.ini",
-      "sudo systemctl enable xrdp --now",
-      # Install dotnet
-      "wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb",
-      "sudo dpkg -i packages-microsoft-prod.deb",
-      "sudo apt-get update",
-      "sudo apt-get install -y apt-transport-https",
-      "sudo apt-get update",
-      "sudo apt-get install -y dotnet-sdk-3.1",
-      "sudo apt-get install -y git",
-      "sudo apt install -y python3-pip",
-      # Change the password to the default ‘kali’ account
-      "echo kali:kali | sudo chpasswd",
-      "mkdir -p toolz",
-      "cd toolz/",
-      # Install Impacket
-      "git clone https://github.com/SecureAuthCorp/impacket.git",
-      "cd impacket",
-      "sudo python3 -m pip install --upgrade pip",
-      "sudo python3 -m pip install .",
-      "cd ../",
-      # Get Covenant C2 framework
-      "git clone --recurse-submodules https://github.com/cobbr/Covenant",
+      "sleep 10",
+      "sudo chmod +x /tmp/kali-setup.sh",
+      "sudo /tmp/kali-setup.sh",
     ]
   }
 }
@@ -679,44 +649,9 @@ resource "aws_ssm_parameter" "asrep-user-ssm-parameter" {
   value = "{\"Username\":\"asrep.user\", \"Password\":\"Password@1\"}"
 }
 
-/* output "first-dc_ip" {
-  value       = aws_instance.first-dc.public_ip
-  description = "Public IP of First-DC"
-} */
-
-/* output "user-server_ip" {
-  value       = aws_instance.user-server.public_ip
-  description = "Public IP of User Server"
-} */
-
-/* output "user-workstation_ip" {
-  value       = aws_instance.user-workstation.public_ip
-  description = "Public IP of User Workstation"
-} */
-
-/* output "web-server-1_ip" {
-  value       = aws_instance.web-server-1.public_ip
-  description = "Public IP of Web Server 1"
-} */
-
-/* output "web-server-2_ip" {
-  value       = aws_instance.web-server-2.public_ip
-  description = "Public IP of Web Server 2"
-}
- */
-output "guac-server_ip" {
+/* output "guac-server_ip" {
   value       = aws_instance.guac-server.public_ip
   description = "Public IP of Guacamole Server. Access this at <ip-address:8080/guacamole>"
-}
-
-/* output "attacker-kali_ip" {
-  value       = aws_instance.attacker-kali.public_ip
-  description = "Public IP of Kali Linux"
-} */
-
-/* output "second-dc_ip" {
-  value       = aws_instance.second-dc.public_ip
-  description = "Public IP of Second-DC"
 } */
 
 output "timestamp" {

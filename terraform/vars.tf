@@ -1,20 +1,15 @@
 variable "PATH_TO_PUBLIC_KEY" {
   # Add the path to the public key you made in AWS like below
-  default = "./keys/terraformkey.pub"
   #default = "YOUR_PUBLIC_KEY"
+  default = "./keys/terraformkey.pub"
 }
 
 variable "PATH_TO_PRIVATE_KEY" {
   # Add the path to the private key you made in AWS like below
-  default = "./keys/terraformkey.pem"
   #default = "YOUR_PRIVATE_KEY"
+  default = "./keys/terraformkey.pem"
 }
 
-variable "PATH_TO_CLIENT_CONNECTION_CONFIG" {
-  # Add the path to the private key you made in AWS like below
-  default = "./guacamole_client_connection_config"
-  #default = "YOUR_PRIVATE_KEY"
-}
 variable "SSH_USER" {
   default = "admin"
 }
@@ -97,15 +92,12 @@ data "aws_ami" "latest-windows-server" {
 
 # Find latest Windows 10
 data "aws_ami" "windows-10" {
-  #most_recent = true
-  owners = ["679593333241"]
+  most_recent = true
+  owners      = ["679593333241"]
 
   filter {
-    #aws_id = "ami-04d967ba9d24e63d2"
     name   = "name"
     values = ["TechnologyLeadershipWinPro10-Intel-4205fe6b-14fe-4864-ae41-61a0049385c0"]
-    #name   = "image-id"
-    #values = ["ami-04d967ba9d24e63d2"]
   }
 }
 
@@ -142,11 +134,8 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-
 # Find Latest Kali
-
 data "aws_ami" "latest-kali-linux" {
-  #count       = "1" ? 1 : 0
   most_recent = true
   owners      = ["679593333241"] # owned by AWS marketplace
 
