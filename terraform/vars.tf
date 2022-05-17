@@ -151,7 +151,7 @@ data "aws_ami" "latest-kali-linux" {
 }
 
 # Customized Windows 10 Pro AMI Image
-data "aws_ami" "windows-client-ami" {
+data "aws_ami" "windows-client" {
   # Count
   owners = ["104743148836"]
 
