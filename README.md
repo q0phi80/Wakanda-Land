@@ -100,4 +100,5 @@ terraform destroy --auto-approve
 - Phil Keeble: https://github.com/PhilKeeble/AWS-RedTeam-ADLab
 - Splunk: https://github.com/splunk/attack_range
 - oehrlis: https://github.com/oehrlis/guacamole
+- https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS
 ```
