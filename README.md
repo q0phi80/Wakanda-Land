@@ -101,4 +101,5 @@ terraform destroy --auto-approve
 - Splunk: https://github.com/splunk/attack_range
 - oehrlis: https://github.com/oehrlis/guacamole
 - https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS
+- https://www.rickgouin.com/run-a-windows-10-instance-in-aws-ec2/
 ```
