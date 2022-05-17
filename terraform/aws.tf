@@ -116,8 +116,8 @@ resource "aws_instance" "user-server" {
 
 # The User Windows 10 workstation which will be main foothold
 resource "aws_instance" "user-workstation" {
-  ami                         = data.aws_ami.windows-10.image_id
-  instance_type               = "t2.small"
+  ami                         = data.aws_ami.windows-client.image_id
+  instance_type               = "t2.micro"
   key_name                    = aws_key_pair.terraformkey.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.first-vpc-subnet.id
@@ -133,34 +133,41 @@ resource "aws_instance" "user-workstation" {
     aws_security_group.first-sg.id,
   ]
 }
-/* resource "time_sleep" "wait_30_mins" {
-  depends_on      = [aws_instance.user-server]
-  create_duration = "30m"
-}
-resource "null_resource" "user-server-setup" {
-  depends_on = [time_sleep.wait_30_mins]
 
-  connection {
-    type     = "winrm"
-    user     = var.WinRM_USER
-    password = var.WinRM_PASSWORD
-    host     = aws_instance.user-server.public_ip
-    port     = 5985
-    insecure = true
-    https = true
-    timeout  = "10m"
-    use_ntlm = true
+provisioner "remote-exec" {
+    inline = [
+      "net user Administrator /active:yes",
+      "net user Administrator Fluffy123"
+      ]
+
+    connection {
+      type     = "winrm"
+      user     = "admin"
+      password = "admin"
+      host     = var.USER_WORKSTATION_IP
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "10m"
+    }
   }
+
   provisioner "remote-exec" {
     inline = [
-      "mkdir toolz",
+      "net user admin /active:no"
     ]
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = "Fluffy123"
+      host     = var.USER_WORKSTATION_IP
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
   }
-  provisioner "local-exec" {
-    command = "Get-Date > completed.txt"
-    interpreter = ["PowerShell", "-Command"]
-  }
-} */
 
 # First Web Server
 resource "aws_instance" "web-server-1" {
