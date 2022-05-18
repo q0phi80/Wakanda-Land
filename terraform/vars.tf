@@ -149,3 +149,16 @@ data "aws_ami" "latest-kali-linux" {
     values = ["hvm"]
   }
 }
+
+# Customized Windows 10 Pro AMI Image
+data "aws_ami" "windows-client" {
+  # Count
+  owners = ["104743148836"]
+
+  filter {
+    name   = "name"
+    values = ["import-ami-06d1c5a6c8a7eecdc"]
+  }
+
+  most_recent = true
+}

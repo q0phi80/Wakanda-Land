@@ -116,8 +116,8 @@ resource "aws_instance" "user-server" {
 
 # The User Windows 10 workstation which will be main foothold
 resource "aws_instance" "user-workstation" {
-  ami                         = data.aws_ami.windows-10.image_id
-  instance_type               = "t2.small"
+  ami                         = data.aws_ami.windows-client.image_id
+  instance_type               = "t2.micro"
   key_name                    = aws_key_pair.terraformkey.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.first-vpc-subnet.id
@@ -133,6 +133,44 @@ resource "aws_instance" "user-workstation" {
     aws_security_group.first-sg.id,
   ]
 }
+<<<<<<< HEAD
+=======
+
+provisioner "remote-exec" {
+    inline = [
+      "net user Administrator /active:yes",
+      "net user Administrator Fluffy123"
+      ]
+
+    connection {
+      type     = "winrm"
+      user     = "admin"
+      password = "admin"
+      host     = var.USER_WORKSTATION_IP
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "10m"
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "net user admin /active:no"
+    ]
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = "Fluffy123"
+      host     = var.USER_WORKSTATION_IP
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
+  }
+>>>>>>> 93dc77e7b6e14d1c81647e2eef9f65829657070d
 
 # First Web Server
 resource "aws_instance" "web-server-1" {
