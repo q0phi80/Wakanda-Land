@@ -13,4 +13,5 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 # All install options - offline, proxy, etc at
 # https://chocolatey.org/install
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+choco install git -y
 </powershell>

@@ -33,3 +33,5 @@ terraform/.terraform/
 dsc/Lab/*
 terraform/terraform*
 terraform/.terraform*
+
+.env

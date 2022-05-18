@@ -133,34 +133,6 @@ resource "aws_instance" "user-workstation" {
     aws_security_group.first-sg.id,
   ]
 }
-/* resource "time_sleep" "wait_30_mins" {
-  depends_on      = [aws_instance.user-server]
-  create_duration = "30m"
-}
-resource "null_resource" "user-server-setup" {
-  depends_on = [time_sleep.wait_30_mins]
-
-  connection {
-    type     = "winrm"
-    user     = var.WinRM_USER
-    password = var.WinRM_PASSWORD
-    host     = aws_instance.user-server.public_ip
-    port     = 5985
-    insecure = true
-    https = true
-    timeout  = "10m"
-    use_ntlm = true
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "mkdir toolz",
-    ]
-  }
-  provisioner "local-exec" {
-    command = "Get-Date > completed.txt"
-    interpreter = ["PowerShell", "-Command"]
-  }
-} */
 
 # First Web Server
 resource "aws_instance" "web-server-1" {
