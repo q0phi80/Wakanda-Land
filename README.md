@@ -40,8 +40,16 @@ The deployment of Wakanda Land environment consist of:
 ```
 Terraform
 Install terraform
+
+AWS
 Install aws cli
-set up creds in aws cli 
+set up creds in aws cli (Ref: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
+  aws configure
+  AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+  AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  Default region name [None]: us-west-2
+  Default output format [None]: json
+
 
 DSC
 1. First, install the following from the PowerShell terminal
@@ -54,7 +62,7 @@ DSC
   - Import-DscResource -ModuleName NetworkingDsc
   - Import-DscResource -ModuleName ComputerManagementDSC
   - Import-DscResource -ModuleName PSDesiredStateConfiguration
-3. Run the script (```. .\adlab.ps1```) from within the ```dsc``` directory to create teh MOF files, which will be dumped into the ```Lab``` folder 
+3. Run the script (```. .\adlab.ps1```) from within the ```dsc``` directory to create the MOF files, which will be dumped into the ```Lab``` folder 
 
 S3
 Create an S3 bucket for your account and modify the variable in terraform/vars.tf with your bucket name

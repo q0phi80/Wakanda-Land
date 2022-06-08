@@ -93,7 +93,7 @@ resource "aws_instance" "first-dc" {
   ]
 }
 
-# The User server which will be main foothold
+# A Window server in the first domain
 resource "aws_instance" "user-server" {
   ami                         = data.aws_ami.latest-windows-server.image_id
   instance_type               = "t2.small"
@@ -108,13 +108,13 @@ resource "aws_instance" "user-server" {
     Workspace = "${terraform.workspace}"
     Name      = "${terraform.workspace}-User-Server"
   }
-  
+
   vpc_security_group_ids = [
     aws_security_group.first-sg.id,
   ]
 }
 
-# The User Windows 10 workstation which will be main foothold
+# The User Windows 10 workstation
 resource "aws_instance" "user-workstation" {
   ami                         = data.aws_ami.windows-client.image_id
   instance_type               = "t2.micro"
@@ -123,6 +123,7 @@ resource "aws_instance" "user-workstation" {
   subnet_id                   = aws_subnet.first-vpc-subnet.id
   private_ip                  = var.USER_WORKSTATION_IP
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
+  user_data                   = file("./scripts/ChocolateyInstallNonAdmin.ps1")
 
   tags = {
     Workspace = "${terraform.workspace}"
@@ -133,44 +134,6 @@ resource "aws_instance" "user-workstation" {
     aws_security_group.first-sg.id,
   ]
 }
-<<<<<<< HEAD
-=======
-
-provisioner "remote-exec" {
-    inline = [
-      "net user Administrator /active:yes",
-      "net user Administrator Fluffy123"
-      ]
-
-    connection {
-      type     = "winrm"
-      user     = "admin"
-      password = "admin"
-      host     = var.USER_WORKSTATION_IP
-      port     = 5985
-      insecure = true
-      https    = false
-      timeout  = "10m"
-    }
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "net user admin /active:no"
-    ]
-
-    connection {
-      type     = "winrm"
-      user     = "Administrator"
-      password = "Fluffy123"
-      host     = var.USER_WORKSTATION_IP
-      port     = 5985
-      insecure = true
-      https    = false
-      timeout  = "7m"
-    }
-  }
->>>>>>> 93dc77e7b6e14d1c81647e2eef9f65829657070d
 
 # First Web Server
 resource "aws_instance" "web-server-1" {
