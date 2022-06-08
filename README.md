@@ -32,9 +32,10 @@ The deployment of Wakanda Land environment consist of:
 - Windows Domain Controller for the Child Domain (first.local)
 - Windows Domain Controller for the Parent Domain (second.local)
 - Windows Server in the Child Domain - this serves as a victim machine for the initial access
+- Windows 10 Pro in the Child Domain - had to customize and create an AMI image for this one
 - Kali Machine - a directory called ```toolz``` is created on this box and Covenant C2 is downloaded into that folder, so its just a matter of running Covenant once you are authenticated into Kali
 - Debian Server serving as Web Server 1 - OWASP's Juice Shop deployed via Docker
-- Debian Server serving as Web Server 2 - Vulnerable Tomcat deployed via Docker
+- Debian Server serving as Web Server 2 - Vulnerable web apps via Docker
 
 ## Installation
 ```
