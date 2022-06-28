@@ -36,23 +36,25 @@ The deployment of Wakanda Land environment consist of:
 - Debian Server serving as Web Server 1 - OWASP's Juice Shop deployed via Docker
 - Debian Server serving as Web Server 2 - Vulnerable web apps via Docker
 
-## Installation
+## Installation and Setup
 ```
 Terraform
-Install terraform
+Visit https://www.terraform.io/downloads and follow the installation process for your OS
 
 AWS
-Install aws cli
-set up creds in aws cli (Ref: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
-  aws configure
-  AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-  AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-  Default region name [None]: us-west-2
-  Default output format [None]: json
-
+Log into your AWS dashboard and create an EC2 Key Pair
+Download a copy of the Private Key unto your development system
+Create a Public Key from your Private (e.g. from a commandline, you can use a command like this: ```ssh-keygen -y -f /terraform-key.pem```)
+Installation: Visit https://aws.amazon.com/cli/ and follow the installation process for your OS
+Configuration: Visit https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html and follow the instruction on setting up your AWS CLI environment
+e.g  aws configure
+     AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+     AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+     Default region name [None]: us-west-2
+     Default output format [None]: json
 
 DSC
-1. First, install the following from the PowerShell terminal
+1. First, install the following from the PowerShell terminal (Assuming doing this on Windows box)
   - Install-module -name GroupPolicyDsc
   - Install-module -name activedirectorydsc
   - Install-module -name networkingdsc
@@ -70,16 +72,15 @@ Create an S3 bucket for your account and modify the variable in terraform/vars.t
 Management IP 
 Change the management IP variable in vars.tf to be your public IP address
 
-Keys
-Create an EC2 key pair, get public key from the pem with ssh-keygen -y -f /key.pem
-Store the file ./terraform/keys/terraform-key.pub 
+SSH Keys
+Store the SSH Public Key file within ./terraform/keys/terraform-key.pub 
 Update the file in the vars.tf to point to that public key (which will assign it to the created EC2 instances)
 Can use this key pair to get the administrator default password from AWS
 
 Once you run the terraform, it will take some time to provision everything, so give it about 30 mins to an hour and you should be good to go.
 ```
 ## Running the lab
-You can take the following steps in running the lab:
+You can take the following steps in running the lab (must be ran from the terraform subfolder):
 
 ### Initialize terraform
 ```
