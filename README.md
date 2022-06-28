@@ -28,13 +28,13 @@ The deployment of Wakanda Land environment consist of:
   - *This provides dashboard access to Kali GUI and Windows RDP instances*
   - *The Kali GUI, Windows RDP and the user accounts used to log into these instances are already backed into the deployment process*
   - *To log into the Guacamole dashboard with the ```guacadmin``` account, you need to SSH into the Guacamole server using the public IP address (which is displayed after the deployment is complete) and then change into the ```guacamole``` directory and then type ```cat .env``` for the password (the ```guacadmin``` password is randomnly generated and saved as an environment variable)*
-- Windows Domain Controller for the Child Domain (first.local)
-- Windows Domain Controller for the Parent Domain (second.local)
-- Windows Server in the Child Domain - this serves as a victim machine for the initial access
-- Windows 10 Pro in the Child Domain - had to customize and create an AMI image for this one
+- Windows Domain Controller for the Child Domain
+- Windows Domain Controller for the Parent Domain
+- Windows Server in the Child Domain
+- Windows 10 Pro in the Child Domain - had to create an AMI image for this one
 - Kali Machine - a directory called ```toolz``` is created on this box and Covenant C2 is downloaded into that folder, so its just a matter of running Covenant once you are authenticated into Kali
-- Debian Server serving as Web Server 1 - OWASP's Juice Shop deployed via Docker
-- Debian Server serving as Web Server 2 - Vulnerable web apps via Docker
+- Debian Server serving as Web Server 1 - OWASP's Juice Shop running on this one
+- Debian Server serving as Web Server 2 - Several vulnerable applications running on this one
 
 ## Installation and Setup
 ```
