@@ -2,7 +2,7 @@
 ## Purpose
 Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for automating the process of deploying an Adversarial Simulation lab infrastructure for practicing various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. I just added some additional sprinkles to their work from my other researches.
 
-## Attacks Covered
+## Attack Techniques Covered
 - Kerberoasting
 - ASRepRoasting
 - Constrained Delegation (computer and user)
@@ -15,12 +15,11 @@ Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for auto
 - DnsAdmin members
 - Write ACL of GPO
 - Password in AD Attributes
-- Cross domain trusts
+- Cross Domain Trusts (for Trust Abuse)
 - SMBSigning disabled on all machines for relay attacks
-- Defender uninstalled so no need to worry about AV
-- Multiple machines so you can practise tunneling, double hop problem, etc
-- All the default things like lateral movement, persistence, pass the hash, pass the ticket, golden tickets, silver tickets etc
-- Web applications exploitations (covering OWASP Top 10)
+- Windows Defender uninstalled
+- Others such as Pass-the-Hash, Pass-the-Ticket, Golden Tickets, Silver Tickets, etc.
+- Web application exploitation techniques (covering OWASP Top 10)
 
 ## Architecture
 The deployment of Wakanda Land environment consist of:
