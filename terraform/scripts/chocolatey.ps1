@@ -1,5 +1,7 @@
 <powershell>
+# Create a directory on the C drive to store tools
 New-Item -Path 'C:\toolz' -ItemType Directory
+
 # Set directory for installation - Chocolatey does not lock
 # down the directory if not the default
 $InstallDir='C:\ProgramData\chocoportable'
@@ -13,5 +15,8 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 # All install options - offline, proxy, etc at
 # https://chocolatey.org/install
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install some stuff
 choco install git -y
+choco install googlechrome -y
 </powershell>

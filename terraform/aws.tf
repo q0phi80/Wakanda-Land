@@ -102,7 +102,7 @@ resource "aws_instance" "user-server" {
   subnet_id                   = aws_subnet.first-vpc-subnet.id
   private_ip                  = var.USER_SERVER_IP
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
-  user_data                   = file("./scripts/ChocolateyInstallNonAdmin.ps1")
+  user_data                   = file("./scripts/chocolatey.ps1")
 
   tags = {
     Workspace = "${terraform.workspace}"
@@ -114,7 +114,7 @@ resource "aws_instance" "user-server" {
   ]
 }
 
-# The User Windows 10 workstation
+# User Windows 10 workstation in the first domain
 resource "aws_instance" "user-workstation" {
   ami                         = data.aws_ami.windows-client.image_id
   instance_type               = "t2.micro"
@@ -123,7 +123,7 @@ resource "aws_instance" "user-workstation" {
   subnet_id                   = aws_subnet.first-vpc-subnet.id
   private_ip                  = var.USER_WORKSTATION_IP
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
-  user_data                   = file("./scripts/ChocolateyInstallNonAdmin.ps1")
+  user_data                   = file("./scripts/chocolatey.ps1")
 
   tags = {
     Workspace = "${terraform.workspace}"
@@ -135,7 +135,7 @@ resource "aws_instance" "user-workstation" {
   ]
 }
 
-# First Web Server
+# First Web Server in the first domain
 resource "aws_instance" "web-server-1" {
   ami                         = data.aws_ami.latest-debian.image_id
   instance_type               = "t2.small"
@@ -165,20 +165,20 @@ resource "null_resource" "web-server-1-setup" {
     agent       = false
   }
   provisioner "file" {
-    source      = "./scripts/web1-setup.sh"
-    destination = "/tmp/web1-setup.sh"
+    source      = "./scripts/juice-shop-setup.sh"
+    destination = "/tmp/juice-shop-setup.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
       "sleep 10",
-      "sudo chmod +x /tmp/web1-setup.sh",
-      "sudo /tmp/web1-setup.sh",
+      "sudo chmod +x /tmp/juice-shop-setup.sh",
+      "sudo /tmp/juice-shop-setup.sh",
     ]
   }
 }
 
-# Second Web Server
+# Second Web Server in the first domain
 resource "aws_instance" "web-server-2" {
   ami                         = data.aws_ami.latest-debian.image_id
   instance_type               = "t2.small"
@@ -246,7 +246,7 @@ resource "aws_instance" "second-dc" {
   ]
 }
 
-# Guacamole Server
+# Guacamole Server providing a dashboard access to Kali and Windows boxes for attacks and developments
 resource "aws_instance" "guac-server" {
   ami                         = data.aws_ami.latest-debian.image_id
   instance_type               = "t2.small"
@@ -290,7 +290,7 @@ resource "null_resource" "guac-server-setup" {
   }
 }
 
-# Kali Linux Install
+# Kali Linux Install amd setup
 resource "aws_instance" "attacker-kali" {
   #count						  = "1" ? 1 : 0
   ami                         = data.aws_ami.latest-kali-linux.image_id
