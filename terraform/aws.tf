@@ -73,7 +73,7 @@ resource "aws_vpc_dhcp_options_association" "first-dhcp-assoc" {
   dhcp_options_id = aws_vpc_dhcp_options.first-dhcp.id
 }
 
-# Our first domain controller of the "first.local" domain
+# Our first Domain Controller of the "first.local" domain
 resource "aws_instance" "first-dc" {
   ami                         = data.aws_ami.latest-windows-server.image_id
   instance_type               = "t2.small"
@@ -93,7 +93,7 @@ resource "aws_instance" "first-dc" {
   ]
 }
 
-# A Window server in the first domain
+# Windows Server in the first domain
 resource "aws_instance" "user-server" {
   ami                         = data.aws_ami.latest-windows-server.image_id
   instance_type               = "t2.small"
@@ -114,7 +114,7 @@ resource "aws_instance" "user-server" {
   ]
 }
 
-# User Windows 10 workstation in the first domain
+# A Windows 10 Pro workstation
 resource "aws_instance" "user-workstation" {
   ami                         = data.aws_ami.windows-client.image_id
   instance_type               = "t2.micro"
@@ -226,7 +226,7 @@ resource "null_resource" "web-server-2-setup" {
   }
 }
 
-# Our second domain controller of the "second.local" domain
+# Our second Domain Controller of the "second.local" domain
 resource "aws_instance" "second-dc" {
   ami                         = data.aws_ami.latest-windows-server.image_id
   instance_type               = "t2.small"
@@ -290,7 +290,7 @@ resource "null_resource" "guac-server-setup" {
   }
 }
 
-# Kali Linux Install amd setup
+# Kali Linux Installation and setup
 resource "aws_instance" "attacker-kali" {
   #count						  = "1" ? 1 : 0
   ami                         = data.aws_ami.latest-kali-linux.image_id

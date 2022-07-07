@@ -14,7 +14,7 @@ apt-get install -y dotnet-sdk-3.1
 apt-get install -y git
 apt install -y python3-pip
 
-# Change the password to the default ‘kali’ account
+# Change the password of the default ‘kali’ account
 echo kali:kali | sudo chpasswd
 mkdir -p toolz
 cd toolz/
