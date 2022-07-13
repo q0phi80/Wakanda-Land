@@ -1,0 +1,1 @@
+[{ "Description": "Windows 10 Pro", "Format": "vhd", "UserBucket": { "S3Bucket": "fluffy-wabbit-bucket", "S3Key": "Windows-10.vhd" } }]
