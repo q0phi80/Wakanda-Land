@@ -107,6 +107,21 @@ terraform apply --auto-approve
 - Log into the Guacomole dashboard with the username guacadmin and password copied
 
 ```
+### Running a test
+```
+- Open the Kali instance from the Guacamole dashboard
+- On Kali, open up a terminal and change directory int /toolz/Covenant/Covenant (cd toolz/Covenant/Covenant)
+- Start the Covenant C2 server (sudo dotnet run)
+- Navigate to https://127.0.0.1:7443 in a browser (ensure the browser is the one in Kali)
+- Create a new Covenant user account and log in
+- Once on Covenant C2, create a Listener and ensure the BindAddress and ConnectionAddress are set to the Kali's internal IP address
+- Create a PowerShell launcher
+- Open a new terminal window (or tab) in Kali and change directory into /toolz/impacket/examples (cd /toolz/impacket/examples) 
+- Use Impacket's WMIEXEC script to obtain a shell on a victim's machine, simulating an initial foothold within the Active Directory environment (python3 wmiexec.py first/regular.user:Password\@1@10.0.1.50)
+- Copy the PowerShell launcher from Covenant and paste it in the shell obtained on the victim's machine (e.g. 10.0.1.50)
+- Confirm you have a connection (Grunt) back to your Covenant C2 framework
+- You can continue with other attack techniques via Covenant
+```
 ### Destroy the environment
 ```
 terraform destroy --auto-approve
