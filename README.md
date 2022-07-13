@@ -100,11 +100,11 @@ terraform apply --auto-approve
 ```
 ### Connect to the environment
 ```
-SSH into the Guacamole server (g.e. ```ssh -i terraformkey.pem admin@guac-server-ip```)
-Change directory into the guacamole directory on the server (```cd guacamole```)
-Display the .env content (```cat .env```)
-Copy the GUACADMIN_PASSWORD password
-Log into the Guacomole dashboard with the username ```guacadmin``` and password copied
+- SSH into the Guacamole server (g.e. ssh -i terraformkey.pem admin@guac-server-ip)
+- Change directory into the guacamole directory on the server (cd guacamole)
+- Display the .env content (cat .env)
+- Copy the GUACADMIN_PASSWORD password
+- Log into the Guacomole dashboard with the username guacadmin and password copied
 
 ```
 ### Destroy the environment
