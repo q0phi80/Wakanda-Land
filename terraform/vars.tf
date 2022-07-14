@@ -150,7 +150,7 @@ data "aws_ami" "latest-kali-linux" {
   }
 }
 
-# My Customized Windows 10 Pro AMI Image
+# My Customized Windows 10 Pro for Workstation AMI Image
 # https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS
 # https://www.rickgouin.com/run-a-windows-10-instance-in-aws-ec2/
 data "aws_ami" "windows-client" {
@@ -159,7 +159,7 @@ data "aws_ami" "windows-client" {
 
   filter {
     name   = "name"
-    values = ["import-ami-06d1c5a6c8a7eecdc"]
+    values = ["import-ami-06e8283e371f14e87"]
   }
 
   most_recent = true

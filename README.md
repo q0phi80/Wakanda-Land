@@ -105,7 +105,6 @@ terraform apply --auto-approve
 - Display the .env content (cat .env)
 - Copy the GUACADMIN_PASSWORD password
 - Log into the Guacomole dashboard with the username guacadmin and password copied
-
 ```
 ### Running a test
 ```
