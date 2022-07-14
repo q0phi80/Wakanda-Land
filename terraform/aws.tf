@@ -123,7 +123,7 @@ resource "aws_instance" "user-workstation" {
   subnet_id                   = aws_subnet.first-vpc-subnet.id
   private_ip                  = var.USER_WORKSTATION_IP
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
-  user_data                   = file("./scripts/chocolatey.ps1")
+  user_data                   = file("./scripts/join-domain.ps1")
 
   tags = {
     Workspace = "${terraform.workspace}"

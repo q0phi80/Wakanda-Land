@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 apt update
-DEBIAN_FRONTEND=noninteractive sudo apt-get --yes --force-yes install kali-desktop-xfce xorg xrdp
+DEBIAN_FRONTEND=noninteractive sudo apt-get --yes --force-yes install kali-desktop-xfce xorg xrdp rdesktop
 sudo sed -i 's/port=3389/port=3390/g' /etc/xrdp/xrdp.ini
 sudo systemctl enable xrdp --now
 
