@@ -135,4 +135,5 @@ terraform destroy --auto-approve
 - https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS
 - https://www.rickgouin.com/run-a-windows-10-instance-in-aws-ec2/
 - https://www.infracost.io/docs/#1-install-infracost
+- https://github.com/mandiant/commando-vm/blob/master/packages.csv
 ```
