@@ -1,3 +1,4 @@
+<powershell>
 #Run as admin
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) 
 { 
@@ -18,3 +19,4 @@ $wc.DownloadFile($url, $output)
 Write-Output "Running Ansible Installation Script"
 
 & $output
+</powershell>

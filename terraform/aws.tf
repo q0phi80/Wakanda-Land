@@ -114,8 +114,15 @@ resource "aws_instance" "user-server" {
   ]
 }
 
+resource "time_sleep" "wait_15_minutes" {
+  depends_on = [aws_instance.first-dc]
+
+  create_duration = "900s"
+}
+
 # A Windows 10 Pro workstation
 resource "aws_instance" "user-workstation" {
+  depends_on = [time_sleep.wait_15_minutes]
   ami                         = data.aws_ami.windows-client.image_id
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.terraformkey.key_name
@@ -123,7 +130,7 @@ resource "aws_instance" "user-workstation" {
   subnet_id                   = aws_subnet.first-vpc-subnet.id
   private_ip                  = var.USER_WORKSTATION_IP
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
-  user_data                   = file("./scripts/join-domain.ps1")
+  user_data                   = file("./scripts/chocolatey.ps1")
 
   tags = {
     Workspace = "${terraform.workspace}"
