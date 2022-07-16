@@ -17,33 +17,13 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # Install some stuff
-choco install git -y
-choco install googlechrome -y
-choco install processhacker -y
-choco install python -y
-choco install burp-suite-free-edition -y
-choco install zap -y
-choco install autopsy -y
-choco install 7zip -y
-choco install adobereader -y
-choco install adexplorer -y
-choco install apimonitor -y
-choco install apktool -y
-choco install netfx-4.8 -y
-choco install cutter -y
-choco install dnspy -y
-choco install ghidra -y
-choco install golang -y
-choco install ida-free -y
-choco install javadecompiler-gui -y
+choco install git googlechrome processhacker python burp-suite-free-edition zap autopsy 7zip adobereader adexplorer apimonitor apktool netfx-4.8 cutter dnspy ghidra golang ida-free javadecompiler-gui -y
 
 # Pause for 10 seconds
-Start-Sleep -Seconds 10
-git clone https://github.com/BloodHoundAD/SharpHound3.git C:\toolz\SharpHound3
-git clone https://github.com/adrecon/ADRecon.git C:\toolz\ADRecon
-https://github.com/r3motecontrol/Ghostpack-CompiledBinaries.git C:\toolz\Ghostpack
+Start-Sleep -Seconds 60
+git clone https://github.com/r3motecontrol/Ghostpack-CompiledBinaries.git C:\toolz\Ghostpack
 git clone https://github.com/danielmiessler/SecLists.git C:\toolz\SecLists
 
 #change the computer's name
-Rename-Computer -NewName "WKSTN-001" -Restart -Force
+# Rename-Computer -NewName "WKSTN-001" -Restart -Force
 </powershell>
