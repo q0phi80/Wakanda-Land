@@ -14,7 +14,7 @@ apt-get install -y dotnet-sdk-3.1
 apt-get install -y git
 apt install -y python3-pip
 
-# Change the password of the default ‘kali’ account
+# Change the password of the default kali account
 echo kali:kali | sudo chpasswd
 mkdir -p toolz
 cd toolz/
@@ -28,5 +28,5 @@ cd ../
 
 # Get Covenant C2 framework
 git clone --recurse-submodules https://github.com/cobbr/Covenant
-# cd toolz/Covenant/Covenant && sudo dotnet run
+cd toolz/Covenant/Covenant && sudo dotnet run
 # Navigate to https://127.0.0.1:7443 in a browser
