@@ -136,4 +136,5 @@ terraform destroy --auto-approve
 - https://www.rickgouin.com/run-a-windows-10-instance-in-aws-ec2/
 - https://www.infracost.io/docs/#1-install-infracost
 - https://github.com/mandiant/commando-vm/blob/master/packages.csv
+- https://github.com/paidem/guacozy
 ```
