@@ -1,5 +1,0 @@
----
-
-- name: install git
-  win_chocolatey:
-    name: git

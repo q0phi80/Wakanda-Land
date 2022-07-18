@@ -119,7 +119,7 @@ resource "aws_instance" "user-server" {
   create_duration = "900s"
 } */
 
-# A Windows 10 Pro workstation
+# A Windows 10 Pro development host providing RDP access for crafting and testing payloads
 resource "aws_instance" "user-workstation" {
   #depends_on = [time_sleep.wait_15_minutes]
   ami                         = data.aws_ami.windows-client.image_id
@@ -128,14 +128,9 @@ resource "aws_instance" "user-workstation" {
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.first-vpc-subnet.id
   private_ip                  = var.USER_WORKSTATION_IP
+  depends_on                  = [aws_instance.first-dc]
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
-  #user_data                   = file("./scripts/chocolatey.ps1")
-  user_data                   = <<EOF
-<powershell>
-Add-Computer -DomainName 'first.local' -NewName 'WKSTN001' -Credential (New-Object -TypeName PSCredential -ArgumentList "admin",(ConvertTo-SecureString -String 'Password@1' -AsPlainText -Force)[0]) -Restart
-</powershell>
-EOF
-
+  # user_data                   = file("./scripts/choco.ps1")
   tags = {
     Workspace = "${terraform.workspace}"
     Name      = "${terraform.workspace}-User-Workstation"
@@ -144,6 +139,136 @@ EOF
   vpc_security_group_ids = [
     aws_security_group.first-sg.id,
   ]
+
+  root_block_device {
+    delete_on_termination = true
+    volume_size           = 100
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "net user Administrator /active:yes",
+      "net user Administrator ${var.WinRM_PASSWORD}"
+      ]
+
+      connection {
+      type     = "winrm"
+      user     = "admin"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.user-workstation.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "10m"
+    }
+  }
+
+  provisioner "file" {
+    source      = "./scripts/rt-toolz.ps1"
+    destination = "C:/Windows/Temp/rt-toolz.ps1"
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.user-workstation.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
+  }
+
+  provisioner "file" {
+    source      = "./scripts/join-domain.ps1"
+    destination = "C:/Windows/Temp/join-domain.ps1"
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.user-workstation.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
+  }
+
+  /* provisioner "remote-exec" {
+    inline = [
+      "net user Administrator /active:yes",
+      "net user Administrator ${var.WinRM_PASSWORD}"
+      ]
+
+      connection {
+      type     = "winrm"
+      user     = "admin"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.user-workstation.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "10m"
+    }
+  }
+ */
+
+  provisioner "remote-exec" {
+    inline = [
+      # "net user admin /active:no"
+      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/rt-toolz.ps1", "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
+      # "powershell -ExecutionPolicy Bypass Rename-Computer -NewName 'WIN-DEV'"
+    ]
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.user-workstation.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
+  }
+
+  /* provisioner "remote-exec" {
+    inline = [
+      # "net user admin /active:no"
+      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
+      # "powershell -ExecutionPolicy Bypass Rename-Computer -NewName 'WIN-DEV'"
+    ]
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.user-workstation.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
+  } */
+
+  provisioner "remote-exec" {
+    inline = [
+      "powershell -ExecutionPolicy Bypass Restart-Computer -Force"
+    ]
+    on_failure = continue
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.user-workstation.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
+  }
 }
 
 # First Web Server in the first domain
@@ -298,6 +423,32 @@ resource "null_resource" "guac-server-setup" {
       "sudo chmod +x /tmp/guac-setup.sh",
       "sudo /tmp/guac-setup.sh",
     ]
+  }
+}
+
+resource "null_resource" "guacozy-server-setup" {
+  connection {
+    type        = "ssh"
+    host        = aws_instance.guac-server.public_ip
+    user        = var.SSH_USER
+    port        = "22"
+    private_key = file(var.PATH_TO_PRIVATE_KEY)
+    agent       = false
+    # depends_on  = null_resource.guacamole-server-setup
+  }
+
+  provisioner "file" {
+    source      = "./scripts/guacozy.sh"
+    destination = "/tmp/guacozy.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sleep 10",
+      "sudo chmod +x /tmp/guacozy.sh",
+      "sudo /tmp/guacozy.sh",
+    ]
+    # on_failure = continue
   }
 }
 

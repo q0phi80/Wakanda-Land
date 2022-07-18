@@ -156,6 +156,7 @@ data "aws_ami" "latest-kali-linux" {
 data "aws_ami" "windows-client" {
   # Count
   owners = ["104743148836"]
+  #owners = ["self"]
 
   filter {
     name   = "name"

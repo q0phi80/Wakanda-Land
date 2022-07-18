@@ -1,5 +1,0 @@
----
-
-- name: install firefox
-  win_chocolatey:
-    name: firefox

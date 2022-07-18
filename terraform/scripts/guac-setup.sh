@@ -11,7 +11,7 @@ apt install -y python3-pip
 sudo curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-# Setup Guacamole environment
+# Setup Guacamole and run it
 git clone https://github.com/q0phi80/guacamole.git
 cd guacamole
 sudo ./bin/prepare_initdb.sh

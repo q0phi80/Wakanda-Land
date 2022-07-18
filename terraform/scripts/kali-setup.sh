@@ -28,5 +28,5 @@ cd ../
 
 # Get Covenant C2 framework
 git clone --recurse-submodules https://github.com/cobbr/Covenant
-cd toolz/Covenant/Covenant && sudo dotnet run
+# cd toolz/Covenant/Covenant && sudo dotnet run
 # Navigate to https://127.0.0.1:7443 in a browser

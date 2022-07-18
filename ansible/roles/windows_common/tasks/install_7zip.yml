@@ -1,5 +1,0 @@
----
-
-- name: install 7zip
-  win_chocolatey:
-    name: 7zip
