@@ -35,3 +35,4 @@ terraform/terraform*
 terraform/.terraform*
 
 .env
+NOTES

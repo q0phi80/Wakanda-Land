@@ -25,14 +25,14 @@ git clone https://github.com/vulhub/vulhub.git
 
 for i in ${CONTAINERS[@]}; do sudo docker-compose -f $i up -d; done
 
-init_check () { # Check whether vulhub folder exists
+init_check () { # Check if vulhub folder exists
     if [[ ! -d vulhub ]]
     then
         echo "The vulhub folder was not found. Download from https://github.com/vulhub/vulhub"
         exit 1
     fi
 
-    # Check whether docker is installed
+    # Check if docker is installed
     docker --version > /dev/null 2>&1
     if [[ $? -ne 0 ]]
     then
@@ -40,7 +40,7 @@ init_check () { # Check whether vulhub folder exists
         exit 3
     fi
 
-    # Check whether docker-compose is installed
+    # Check if docker-compose is installed
     docker-compose version > /dev/null 2>&1
     if [[ $? -ne 0 ]]
     then
@@ -87,7 +87,7 @@ then
 elif [[ $1 == "list" ]]
 then
     echo -e "Listing all available Docker containers from vulhub."
-    # TODO: List all the available Docker containers. Check if they are running.
+    
 else
     echo -e "\n\e[31m\e[1mVulnerables\e[0m: a quick and simple way of starting multiple Docker containers from vulhub.\n"
     echo -e "Usage: $0 [start or stop]\n"

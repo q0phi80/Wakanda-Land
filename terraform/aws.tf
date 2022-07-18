@@ -113,15 +113,8 @@ resource "aws_instance" "user-server" {
   ]
 }
 
-/* resource "time_sleep" "wait_15_minutes" {
-  depends_on = [aws_instance.first-dc]
-
-  create_duration = "900s"
-} */
-
 # A Windows 10 Pro development host providing RDP access for crafting and testing payloads
 resource "aws_instance" "user-workstation" {
-  #depends_on = [time_sleep.wait_15_minutes]
   ami                         = data.aws_ami.windows-client.image_id
   instance_type               = "t2.medium"
   key_name                    = aws_key_pair.terraformkey.key_name
@@ -130,7 +123,6 @@ resource "aws_instance" "user-workstation" {
   private_ip                  = var.USER_WORKSTATION_IP
   depends_on                  = [aws_instance.first-dc]
   iam_instance_profile        = aws_iam_instance_profile.ssm_instance_profile.name
-  # user_data                   = file("./scripts/choco.ps1")
   tags = {
     Workspace = "${terraform.workspace}"
     Name      = "${terraform.workspace}-User-Workstation"
@@ -140,11 +132,7 @@ resource "aws_instance" "user-workstation" {
     aws_security_group.first-sg.id,
   ]
 
-  root_block_device {
-    delete_on_termination = true
-    volume_size           = 100
-  }
-
+# Connect to the Win 10 with the Local Admin account and then activate the default Administrator account
   provisioner "remote-exec" {
     inline = [
       "net user Administrator /active:yes",
@@ -163,6 +151,7 @@ resource "aws_instance" "user-workstation" {
     }
   }
 
+# Push some PowerShell scripts from our local box unto the remote Win 10 box
   provisioner "file" {
     source      = "./scripts/rt-toolz.ps1"
     destination = "C:/Windows/Temp/rt-toolz.ps1"
@@ -195,30 +184,10 @@ resource "aws_instance" "user-workstation" {
     }
   }
 
-  /* provisioner "remote-exec" {
-    inline = [
-      "net user Administrator /active:yes",
-      "net user Administrator ${var.WinRM_PASSWORD}"
-      ]
-
-      connection {
-      type     = "winrm"
-      user     = "admin"
-      password = var.WinRM_PASSWORD
-      host     = aws_instance.user-workstation.public_ip
-      port     = 5985
-      insecure = true
-      https    = false
-      timeout  = "10m"
-    }
-  }
- */
-
+# Run the PowerShell scripts on the Remote Win 10 box to install tools and also join the Win 10 box to the domain
   provisioner "remote-exec" {
     inline = [
-      # "net user admin /active:no"
       "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/rt-toolz.ps1", "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
-      # "powershell -ExecutionPolicy Bypass Rename-Computer -NewName 'WIN-DEV'"
     ]
 
     connection {
@@ -233,25 +202,7 @@ resource "aws_instance" "user-workstation" {
     }
   }
 
-  /* provisioner "remote-exec" {
-    inline = [
-      # "net user admin /active:no"
-      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
-      # "powershell -ExecutionPolicy Bypass Rename-Computer -NewName 'WIN-DEV'"
-    ]
-
-    connection {
-      type     = "winrm"
-      user     = "Administrator"
-      password = var.WinRM_PASSWORD
-      host     = aws_instance.user-workstation.public_ip
-      port     = 5985
-      insecure = true
-      https    = false
-      timeout  = "7m"
-    }
-  } */
-
+# Once the Win 10 box is joined to the domain, it will need to be restarted. Using this as a backup to make sure the box actually do reboot
   provisioner "remote-exec" {
     inline = [
       "powershell -ExecutionPolicy Bypass Restart-Computer -Force"
@@ -427,28 +378,27 @@ resource "null_resource" "guac-server-setup" {
 }
 
 resource "null_resource" "guacozy-server-setup" {
-  connection {
+    connection {
     type        = "ssh"
     host        = aws_instance.guac-server.public_ip
     user        = var.SSH_USER
     port        = "22"
     private_key = file(var.PATH_TO_PRIVATE_KEY)
     agent       = false
-    # depends_on  = null_resource.guacamole-server-setup
   }
 
   provisioner "file" {
-    source      = "./scripts/guacozy.sh"
-    destination = "/tmp/guacozy.sh"
+    source      = "./files/docker-compose.yml"
+    destination = "/tmp/docker-compose.yml"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sleep 10",
-      "sudo chmod +x /tmp/guacozy.sh",
-      "/tmp/guacozy.sh",
+      "sleep 60",
+      "cd /tmp/",
+      "sudo docker-compose up > /dev/null 2>&1",
     ]
-    # on_failure = continue
+    on_failure = continue
   }
 }
 

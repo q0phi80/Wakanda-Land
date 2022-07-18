@@ -151,10 +151,9 @@ data "aws_ami" "latest-kali-linux" {
 }
 
 # My Customized Windows 10 Pro for Workstation AMI Image
-# https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS
+# Borrowed from https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS and
 # https://www.rickgouin.com/run-a-windows-10-instance-in-aws-ec2/
 data "aws_ami" "windows-client" {
-  # Count
   owners = ["104743148836"]
   #owners = ["self"]
 

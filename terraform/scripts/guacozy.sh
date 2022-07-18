@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 cd /tmp
-touch dc.yml
-var=/tmp/dc.yml
-cat << EOF >> $var
+mkdir guacozy
+cd guacozy
+touch docker-compose.yml
+
+cat << EOF >> docker-compose.yml
 version: '3'  
 services:
   server:
@@ -33,6 +35,35 @@ volumes:
   postgres-data:
 EOF
 
-sudo docker-compose -f dc.yml up -d
+# Check if docker-compose.yml exists
+init_check () { # Check whether vulhub folder exists
+    if [[ ! -f docker-compose.yml ]]
+    then
+        echo "The docker-compose.yml file doesn't exit"
+        exit 1
+    fi
+}
+
+start () {
+	docker-compose -f docker-compose.yml up -d
+}
+
+stop () {
+	docker-compose -f docker-dompose.yml down -v
+}
+
+if [[ $1 == "start" ]]
+then
+    init_check
+    echo "Starting all docker containers..."
+    start
+elif [[ $1 == "stop" ]]
+then
+    init_check
+    echo "Stopping all docker containers ..."
+    stop
+else
+    echo -e "Usage: $0 [start or stop]\n"
+fi
 
 #sudo docker-compose up -d
