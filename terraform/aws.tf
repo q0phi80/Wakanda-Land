@@ -149,9 +149,9 @@ resource "aws_instance" "user-workstation" {
     inline = [
       "net user Administrator /active:yes",
       "net user Administrator ${var.WinRM_PASSWORD}"
-      ]
+    ]
 
-      connection {
+    connection {
       type     = "winrm"
       user     = "admin"
       password = var.WinRM_PASSWORD
