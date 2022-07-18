@@ -446,7 +446,7 @@ resource "null_resource" "guacozy-server-setup" {
     inline = [
       "sleep 10",
       "sudo chmod +x /tmp/guacozy.sh",
-      "sudo /tmp/guacozy.sh",
+      "/tmp/guacozy.sh",
     ]
     # on_failure = continue
   }
