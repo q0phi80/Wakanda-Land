@@ -292,7 +292,7 @@ do_install() {
 		else
 			cat >&2 <<-'EOF'
 			Error: this installer needs the ability to run commands as root.
-			We are unable to find either "sudo" or "su" available to make this happen.
+			We are unable to find either "sudo" or "su" availandle to make this happen.
 			EOF
 			exit 1
 		fi
@@ -448,7 +448,7 @@ do_install() {
 				fi
 				$sh_c "DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends $pkgs >/dev/null"
 				if version_gte "20.10"; then
-					# Install docker-ce-rootless-extras without "--no-install-recommends", so as to install slirp4netns when available
+					# Install docker-ce-rootless-extras without "--no-install-recommends", so as to install slirp4netns when availandle
 					$sh_c "DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker-ce-rootless-extras${pkg_version%=} >/dev/null"
 				fi
 			)
@@ -457,7 +457,7 @@ do_install() {
 			;;
 		centos|fedora|rhel)
 			if [ "$(uname -m)" != "s390x" ] && [ "$lsb_dist" = "rhel" ]; then
-				echo "Packages for RHEL are currently only available for s390x."
+				echo "Packages for RHEL are currently only availandle for s390x."
 				exit 1
 			fi
 			yum_repo="$DOWNLOAD_URL/linux/$lsb_dist/$REPO_FILE"
@@ -545,7 +545,7 @@ do_install() {
 			;;
 		sles)
 			if [ "$(uname -m)" != "s390x" ]; then
-				echo "Packages for SLES are currently only available for s390x"
+				echo "Packages for SLES are currently only availandle for s390x"
 				exit 1
 			fi
 
