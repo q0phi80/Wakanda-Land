@@ -65,7 +65,7 @@ DSC
   - Import-DscResource -ModuleName NetworkingDsc
   - Import-DscResource -ModuleName ComputerManagementDSC
   - Import-DscResource -ModuleName PSDesiredStateConfiguration
-3. Run the script (```. .\adlab.ps1```) from within the ```dsc``` directory to create the MOF files, which will be dumped into the ```Lab``` folder 
+3. Run the script (```. .\jungle.ps1```) from within the ```dsc``` directory to create the MOF files, which will be dumped into the ```Jungle``` folder 
 
 S3
 Create an S3 bucket for your account and modify the variable in terraform/vars.tf with your bucket name
@@ -117,8 +117,8 @@ terraform apply --auto-approve
 - Once on Covenant C2, create a Listener and ensure the BindAddress and ConnectionAddress are set to the Kali's internal IP address
 - Create a PowerShell launcher
 - Open a new terminal window (or tab) in Kali and change directory into /toolz/impacket/examples (cd /toolz/impacket/examples) 
-- Use Impacket's WMIEXEC script to obtain a shell on a victim's machine, simulating an initial foothold within the Active Directory environment (python3 wmiexec.py first/regular.user:Password\@1@10.0.1.50)
-- Copy the PowerShell launcher from Covenant and paste it in the shell obtained on the victim's machine (e.g. 10.0.1.50)
+- Use Impacket's WMIEXEC script to obtain a shell on a victim's machine, simulating an initial foothold within the Active Directory environment (python3 wmiexec.py bast/tsankara:Password\@1@10.0.1.53)
+- Copy the PowerShell launcher from Covenant and paste it in the shell obtained on the victim's machine (e.g. 10.0.1.53)
 - Confirm you have a connection (Grunt) back to your Covenant C2 framework
 - You can continue with other attack techniques via Covenant
 ```
