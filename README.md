@@ -1,5 +1,5 @@
 # Wakanda Land
-![Wakanda Land](WL5-800x800.jpg)
+![Wakanda Land](WL5.jpg)
 ## Purpose
 Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for automating the process of deploying an Adversarial Simulation lab infrastructure for practicing various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. I just added some additional sprinkles to their work from my other researches.
 
