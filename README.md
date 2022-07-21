@@ -32,8 +32,8 @@ The deployment of Wakanda Land environment consist of:
 - Windows Domain Controller for the Child Domain
 - Windows Domain Controller for the Parent Domain
 - Windows Server in the Child Domain
-- Windows 10 Pro in the Child Domain - had to create an AMI image for this one
-- Kali Machine - a directory called ```toolz``` is created on this box and Covenant C2 is downloaded into that folder, so its just a matter of running Covenant once you are authenticated into Kali
+- Windows 10 Pro in the Child Domain - had to create a custom AMI image for this one
+- Kali Machine - a directory called ```toolz``` is created on this box where Impacket and Covenant C2 are downloaded into that folder, so its just a matter of running Covenant once you are authenticated into Kali
 - Debian Server serving as Web Server 1 - OWASP's Juice Shop running on this one
 - Debian Server serving as Web Server 2 - Several vulnerable applications running on this one
 
@@ -117,7 +117,7 @@ terraform apply --auto-approve
 - Once on Covenant C2, create a Listener and ensure the BindAddress and ConnectionAddress are set to the Kali's internal IP address
 - Create a PowerShell launcher
 - Open a new terminal window (or tab) in Kali and change directory into /toolz/impacket/examples (cd /toolz/impacket/examples) 
-- Use Impacket's WMIEXEC script to obtain a shell on a victim's machine, simulating an initial foothold within the Active Directory environment (python3 wmiexec.py bast/tsankara:Password\@1@10.0.1.53)
+- Use Impacket's WMIEXEC script to obtain a shell on a victim's machine, simulating an initial foothold within the Active Directory environment (python3 wmiexec.py bast/wakandan:Password\@1@10.0.1.53)
 - Copy the PowerShell launcher from Covenant and paste it in the shell obtained on the victim's machine (e.g. 10.0.1.53)
 - Confirm you have a connection (Grunt) back to your Covenant C2 framework
 - You can continue with other attack techniques via Covenant
