@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-sudo docker-compose up -d
+cd /tmp/
+sudo docker-compose -f docker-compose up -d
