@@ -184,10 +184,28 @@ resource "aws_instance" "ramonda" {
     }
   }
 
-  # Run the PowerShell scripts on the Remote Win 10 box to install tools and also join the Win 10 box to the domain
+  # Run the PowerShell scripts on the Remote Win 10 box to install tools
   provisioner "remote-exec" {
     inline = [
-      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/rt-toolz.ps1", "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
+      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/rt-toolz.ps1"
+    ]
+
+    connection {
+      type     = "winrm"
+      user     = "Administrator"
+      password = var.WinRM_PASSWORD
+      host     = aws_instance.ramonda.public_ip
+      port     = 5985
+      insecure = true
+      https    = false
+      timeout  = "7m"
+    }
+  }
+
+# Join the Windows 10 box to the domain bast
+  provisioner "remote-exec" {
+    inline = [
+      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
     ]
 
     connection {
@@ -399,9 +417,9 @@ resource "null_resource" "guacozy-server-setup" {
 
   provisioner "remote-exec" {
     inline = [
-      "sleep 60",
+      "sleep 120",
       "sudo chmod +x /tmp/guacozy.sh",
-      "sudo /tmp/guacozy.sh",
+      "sudo /tmp/guacozy.sh"
     ]
     on_failure = continue
   }

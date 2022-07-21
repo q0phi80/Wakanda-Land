@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 cd /tmp/
-sudo docker-compose -f docker-compose up -d
+sudo docker-compose -f docker-compose.yml up -d

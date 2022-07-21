@@ -15,7 +15,7 @@ variable "SSH_USER" {
 }
 
 variable "WinRM_USER" {
-  default = "admin"
+  default = "admin@bast.land"
 }
 
 variable "Domain_Admin" {
@@ -166,7 +166,8 @@ data "aws_ami" "windows-client" {
 
   filter {
     name   = "name"
-    values = ["import-ami-06e8283e371f14e87"]
+    values = ["import-ami-07b944fe8b0a37493"]
+    #values = ["import-ami-06104ffaf2a9d8fda"]
   }
 
   most_recent = true
