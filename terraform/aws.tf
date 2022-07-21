@@ -392,11 +392,16 @@ resource "null_resource" "guacozy-server-setup" {
     destination = "/tmp/docker-compose.yml"
   }
 
+  provisioner "file" {
+    source      = "./scripts/guacozy.sh"
+    destination = "/tmp/guacozy.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sleep 60",
-      "cd /tmp/",
-      "sudo docker-compose up > /dev/null 2>&1",
+      "sudo chmod +x /tmp/guacozy.sh",
+      "sudo /tmp/guacozy.sh",
     ]
     on_failure = continue
   }

@@ -13,15 +13,19 @@ variable "PATH_TO_PRIVATE_KEY" {
 variable "SSH_USER" {
   default = "admin"
 }
+
 variable "WinRM_USER" {
-  default = "admin@bast.land"
+  default = "admin"
 }
+
 variable "Domain_Admin" {
   default = "tsankara@bast.land"
 }
+
 variable "WinRM_PASSWORD" {
   default = "Password@1"
 }
+
 variable "VPC_CIDR" {
   default = "10.0.0.0/16"
 }
