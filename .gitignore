@@ -30,8 +30,7 @@ override.tf.json
 terraform/keys/*
 terraform/.terraform.lock.hcl
 terraform/.terraform/
-dsc/Jungle/*
-dsc/adlab.ps1
+dsc/Jungle*
 terraform/terraform*
 terraform/.terraform*
 
