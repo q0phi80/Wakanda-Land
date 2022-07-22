@@ -13,41 +13,48 @@ variable "PATH_TO_PRIVATE_KEY" {
 variable "SSH_USER" {
   default = "admin"
 }
+
 variable "WinRM_USER" {
-  default = "admin@first.local"
+  default = "admin@bast.land"
 }
+
+variable "Domain_Admin" {
+  default = "tsankara@bast.land"
+}
+
 variable "WinRM_PASSWORD" {
   default = "Password@1"
 }
+
 variable "VPC_CIDR" {
   default = "10.0.0.0/16"
 }
 
-variable "FIRST_SUBNET_CIDR" {
+variable "BAST_SUBNET_CIDR" {
   default = "10.0.1.0/24"
 }
 
-variable "SECOND_SUBNET_CIDR" {
+variable "WAKANDA_SUBNET_CIDR" {
   default = "10.0.2.0/24"
 }
 
-variable "FIRST_DC_IP" {
+variable "BAKU_DC_IP" {
   default = "10.0.1.100"
 }
 
-variable "USER_SERVER_IP" {
+variable "NAKIA_IP" {
   default = "10.0.1.50"
 }
 
-variable "WEB_SERVER_1_IP" {
+variable "OKOYE_IP" {
   default = "10.0.1.51"
 }
 
-variable "WEB_SERVER_2_IP" {
+variable "SONINKE_IP" {
   default = "10.0.1.52"
 }
 
-variable "USER_WORKSTATION_IP" {
+variable "RAMONDA_IP" {
   default = "10.0.1.53"
 }
 
@@ -55,11 +62,11 @@ variable "GUAC_SERVER_IP" {
   default = "10.0.1.10"
 }
 
-variable "ATTACKER_KALI_IP" {
+variable "ULYSSES_IP" {
   default = "10.0.1.11"
 }
 
-variable "SECOND_DC_IP" {
+variable "CHALLA_DC_IP" {
   default = "10.0.2.100"
 }
 
@@ -159,7 +166,8 @@ data "aws_ami" "windows-client" {
 
   filter {
     name   = "name"
-    values = ["import-ami-06e8283e371f14e87"]
+    values = ["import-ami-07b944fe8b0a37493"]
+    #values = ["import-ami-06104ffaf2a9d8fda"]
   }
 
   most_recent = true

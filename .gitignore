@@ -30,9 +30,10 @@ override.tf.json
 terraform/keys/*
 terraform/.terraform.lock.hcl
 terraform/.terraform/
-dsc/Lab/*
+dsc/land/*
 terraform/terraform*
 terraform/.terraform*
 
 .env
 NOTES
+Lab

@@ -1,4 +1,4 @@
-configuration land {
+configuration Jungle {
 
     param
     (
@@ -7,23 +7,22 @@ configuration land {
         [Parameter(Mandatory)]
         [pscredential]$domainCred,
         [Parameter(Mandatory)]
-        [string]$firstDomainName,
+        [string]$bastDomainName,
         [Parameter(Mandatory)]
-        [string]$secondDomainName,
+        [string]$wakandaDomainName,
         [Parameter(Mandatory)]
-        [pscredential]$firstDomainCred
+        [pscredential]$bastDomainCred
     )
 
     Import-DscResource -ModuleName ActiveDirectoryDsc
     Import-DscResource -ModuleName NetworkingDsc
     Import-DscResource -ModuleName ComputerManagementDSC
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -Module nx
 
-    Node "First" {
+    Node "Bast" {
 
         Computer NewName {
-            Name = "baku-dc"
+            Name = "Baku-DC"
         }
         
         WindowsFeature ADDSInstall {
@@ -51,20 +50,20 @@ configuration land {
             Name   = "Domain"
         }
 
-        User AdminUser {
+        User Bashenga {
             Ensure = "Present"
             UserName = $domainCred.UserName
             Password = $domainCred
         }
 
-        Group Administrators {
+        Group Pantheon {
             GroupName = "Administrators"
             MembersToInclude = $domainCred.UserName
-            DependsOn = "[User]AdminUser"
+            DependsOn = "[User]Bashenga"
         }
 
         ADDomain CreateDC {
-            DomainName = $firstDomainName
+            DomainName = $bastDomainName
             Credential = $domainCred
             SafemodeAdministratorPassword = $safemodeAdministratorCred
             DatabasePath = 'C:\NTDS'
@@ -72,8 +71,8 @@ configuration land {
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
 
-        WaitForADDomain waitFirstDomain {
-            DomainName = $firstDomainName
+        WaitForADDomain waitBastDomain {
+            DomainName = $bastDomainName
             DependsOn = "[ADDomain]CreateDC"
         }
 
@@ -83,14 +82,14 @@ configuration land {
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             Validate       = $false
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         Script SetConditionalForwardedZone {
             GetScript = { return @{ } }
 
             TestScript = {
-                $zone = Get-DnsServerZone -Name $using:secondDomainName -ErrorAction SilentlyContinue
+                $zone = Get-DnsServerZone -Name $using:wakandaDomainName -ErrorAction SilentlyContinue
                 if ($zone -ne $null -and $zone.ZoneType -eq 'Forwarder') {
                     return $true
                 }
@@ -99,29 +98,29 @@ configuration land {
             }
 
             SetScript = {
-                $ForwardDomainName = $using:secondDomainName
+                $ForwardDomainName = $using:wakandaDomainName
                 $IpAddresses = @("10.0.2.100")
                 Add-DnsServerConditionalForwarderZone -Name "$ForwardDomainName" -ReplicationScope "Domain" -MasterServers $IpAddresses
             }
 
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        ADGroup DomainAdmin {
+        ADGroup Orisha {
             Ensure = "Present"
             GroupName = "Domain Admins"
             MembersToInclude = $domainCred.UserName
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        ADUser 'wakandan'
+        ADUser 'Wakandan'
         {
             Ensure     = 'Present'
-            UserName   = 'wakandan'
-            Password   = (New-Object System.Management.Automation.PSCredential("wakandan", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
+            UserName   = 'Wakandan'
+            Password   = (New-Object System.Management.Automation.PSCredential("Wakandan", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         ADUser 'Thoth'
@@ -130,15 +129,15 @@ configuration land {
             UserName   = 'Thoth'
             Password   = (New-Object System.Management.Automation.PSCredential("Thoth", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        ADGroup DnsAdmin {
+        ADGroup Heliopolitan {
             Ensure = "Present"
             GroupName = "DnsAdmins"
             MembersToInclude = "Thoth"
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Thoth"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Thoth"
         }
 
         ADUser 'Kokou'
@@ -147,8 +146,8 @@ configuration land {
             UserName   = 'Kokou'
             Password   = (New-Object System.Management.Automation.PSCredential("Kokou", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         Script "Kokou Unconstrained Delegation Set"
@@ -162,7 +161,7 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Kokou" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Kokou"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Kokou"
         }
 
         ADUser 'Mujaji' 
@@ -171,15 +170,15 @@ configuration land {
             UserName   = 'Mujaji'
             Password   = (New-Object System.Management.Automation.PSCredential("Mujaji", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         Script "Mujaji constrained Delegation Set"
         {
             SetScript = {
                 $user = (Get-ADUser -Identity "Mujaji").DistinguishedName
-                Set-ADObject -Identity $user -Add @{"msDS-AllowedToDelegateTo" = @("CIFS/baku-dc","CIFS/baku-dc.bast.land","CIFS/baku-dc.bast.land/bast.land")}
+                Set-ADObject -Identity $user -Add @{"msDS-AllowedToDelegateTo" = @("CIFS/Baku-DC","CIFS/Baku-DC.Bast.land","CIFS/Baku-DC.bast.land/bast.land")}
             }
             TestScript = { 
                 $false 
@@ -187,30 +186,30 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Mujaji" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Mujaji"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Mujaji"
         }
 
-        ADComputer "Constrained.Computer" 
+        ADComputer "Sekhmet" 
         {
             Ensure = "Present"
-            ComputerName = "Suspicious-PC"
-            Path = "CN=Computers,DC=first,DC=local"
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            ComputerName = "Sekhmet-PC"
+            Path = "CN=Computers,DC=bast,DC=land"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "Suspicious-PC constrained Delegation Set"
+        Script "Sekhmet-PC constrained Delegation Set"
         {
             SetScript = {
-                $comp = (Get-ADComputer -Identity "Suspicious-PC").DistinguishedName
-                Set-ADObject -Identity $comp -Add @{"msDS-AllowedToDelegateTo" = @("HTTP/baku-dc","HTTP/baku-dc.bast.land","HTTP/baku-dc.bast.land/bast.land")}
+                $comp = (Get-ADComputer -Identity "Sekhmet-PC").DistinguishedName
+                Set-ADObject -Identity $comp -Add @{"msDS-AllowedToDelegateTo" = @("HTTP/Baku-DC","HTTP/Baku-DC.Bast.land","HTTP/Baku-DC.bast.land/bast.land")}
             }
             TestScript = { 
                 $false 
             }
             GetScript = { 
-                @{ Result = (Get-ADComputer "Suspicious-PC" ) } 
+                @{ Result = (Get-ADComputer "Sekhmet-PC" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         ADUser 'Sobek'
@@ -219,11 +218,11 @@ configuration land {
             UserName   = 'Sobek'
             Password   = (New-Object System.Management.Automation.PSCredential("Sobek", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "Sobek Write Permissions on User Node"
+        Script "Sobek Write Permissions on User Mujaji"
         {
             SetScript = {
                 $Destination = (Get-ADUser -Identity "Mujaji").DistinguishedName
@@ -244,7 +243,7 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Sobek" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Sobek"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Sobek"
         }
 
         ADUser 'Ghekre'
@@ -253,11 +252,11 @@ configuration land {
             UserName   = 'Ghekre'
             Password   = (New-Object System.Management.Automation.PSCredential("Ghekre", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "Ghekre GenericAll Permissions on User Node"
+        Script "Ghekre GenericAll Permissions on User Sobek"
         {
             SetScript = {
                 $Destination = (Get-ADUser -Identity "Sobek").DistinguishedName
@@ -278,7 +277,7 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Ghekre" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Ghekre"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Ghekre"
         }
 
         ADUser 'Ngi'
@@ -287,14 +286,14 @@ configuration land {
             UserName   = 'Ngi'
             Password   = (New-Object System.Management.Automation.PSCredential("Ngi", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "Ngi Write Permissions on Comp Node"
+        Script "Ngi Write Permissions on Comp Baku-DC"
         {
             SetScript = {
-                $Destination = (Get-ADComputer -Identity "baku-dc").DistinguishedName
+                $Destination = (Get-ADComputer -Identity "Baku-DC").DistinguishedName
                 $Source = (Get-ADUser -Identity "Ngi").sid
                 $Rights = "GenericWrite"
                 $ADObject = [ADSI]("LDAP://" + $Destination)
@@ -312,17 +311,17 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Ngi" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Ngi"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Ngi"
         }
 
-        ADUser "Hadari-Yao"
+        ADUser 'Hadari-Yao'
         {
             Ensure     = 'Present'
             UserName   = 'Hadari-Yao'
             Password   = (New-Object System.Management.Automation.PSCredential("Hadari-Yao", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         Script "Hadari-Yao Write Permissions on GPO"
@@ -336,7 +335,7 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Hadari-Yao" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Hadari-Yao"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Hadari-Yao"
         }
 
         ADUser 'Yaounde'
@@ -345,9 +344,9 @@ configuration land {
             UserName   = 'Yaounde'
             Password   = (New-Object System.Management.Automation.PSCredential("Yaounde", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
+            Path       = 'CN=Users,DC=bast,DC=land'
             Description = 'LAPS yet to be implemented'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         ADUser 'Baoule'
@@ -356,11 +355,11 @@ configuration land {
             UserName   = 'Baoule'
             Password   = (New-Object System.Management.Automation.PSCredential("Baoule", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "Baoule Write Permissions on Group"
+        Script "Baoule Write Permissions on Domain Admins Group"
         {
             SetScript = {
                 $Destination = (Get-ADGroup -Identity "Domain Admins").DistinguishedName
@@ -381,7 +380,7 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Baoule" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Baoule"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Baoule"
         }
 
         ADUser 'Hanuman'
@@ -390,14 +389,14 @@ configuration land {
             UserName   = 'Hanuman'
             Password   = (New-Object System.Management.Automation.PSCredential("Hanuman", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "Hanuman WriteDACL Permissions on DC"
+        Script "Hanuman WriteDACL Permissions on Baku-DC"
         {
             SetScript = {
-                $Destination = (Get-ADComputer -Identity "baku-dc").DistinguishedName
+                $Destination = (Get-ADComputer -Identity "Baku-DC").DistinguishedName
                 $Source = (Get-ADUser -Identity "Hanuman").sid
                 $Rights = "WriteDACL"
                 $ADObject = [ADSI]("LDAP://" + $Destination)
@@ -415,7 +414,7 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Hanuman" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Hanuman"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Hanuman"
         }
 
         ADUser 'Akamba'
@@ -424,9 +423,9 @@ configuration land {
             UserName   = 'Akamba'
             Password   = (New-Object System.Management.Automation.PSCredential("Akamba", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
+            Path       = 'CN=Users,DC=bast,DC=land'
             Description = 'GMSA yet to be implemented'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         ADUser 'Mmusa'
@@ -435,11 +434,11 @@ configuration land {
             UserName   = 'Mmusa'
             Password   = (New-Object System.Management.Automation.PSCredential("Mmusa", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "Mmusa Password in AD"
+        Script "Mmusa Password disclosed in Description"
         {
             SetScript = {
                 Set-ADUser -Identity "Mmusa" -Description "Remember to remove this! Password@1"
@@ -450,7 +449,7 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Mmusa" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]Mmusa"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Mmusa"
         }
 
         ADUser 'Plumumba'
@@ -459,19 +458,19 @@ configuration land {
             UserName   = 'Plumumba'
             Password   = (New-Object System.Management.Automation.PSCredential("Plumumba", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
+            Path       = 'CN=Users,DC=bast,DC=land'
             ServicePrincipalNames = "MSSQL/sql.bast.land"
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        ADUser asrep
+        ADUser Knkrumah
         {
             Ensure     = 'Present'
             UserName   = 'Knkrumah'
             Password   = (New-Object System.Management.Automation.PSCredential("Knkrumah", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'bast.land'
-            Path       = 'CN=Users,DC=first,DC=local'
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Path       = 'CN=Users,DC=bast,DC=land'
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         Script "Knkrumah PreAuth Disable"
@@ -485,53 +484,53 @@ configuration land {
             GetScript = { 
                 @{ Result = (Get-ADUser "Knkrumah" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain", "[ADUser]asrep"
+            DependsOn = "[WaitForADDomain]waitBastDomain", "[ADUser]Knkrumah"
         }
 
-        Script "nakia-RDP"
+        Script "Nakia-RDP"
         {
             SetScript = {
-                Start-Sleep -Seconds 300
-                Invoke-Command -ComputerName "nakia" -Scriptblock {net localgroup "Remote Desktop Users" "first\domain users" /add}
+                Start-Sleep -Wakandas 300
+                Invoke-Command -ComputerName "Nakia" -Scriptblock {net landgroup "Remote Desktop Users" "bast\domain users" /add}
             }
             TestScript = { 
                 $false 
             }
             GetScript = { 
-                @{ Result = (Get-ADComputer "nakia" ) } 
+                @{ Result = (Get-ADComputer "Nakia" ) } 
             }
-            PsDscRunAsCredential = $firstDomainCred
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            PsDscRunAsCredential = $bastDomainCred
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "ramonda-RDP" {
+        Script "Ramonda-RDP" {
             SetScript            = {
-                Start-Sleep -Seconds 300
-                Invoke-Command -ComputerName "ramonda" -Scriptblock { net localgroup "Remote Desktop Users" "first\domain users" /add }
+                Start-Sleep -Wakandas 300
+                Invoke-Command -ComputerName "Ramonda" -Scriptblock { net landgroup "Remote Desktop Users" "bast\domain users" /add }
             }
             TestScript           = { 
                 $false 
             }
             GetScript            = { 
-                @{ Result = (Get-ADComputer "ramonda" ) } 
+                @{ Result = (Get-ADComputer "Ramonda" ) } 
             }
-            PsDscRunAsCredential = $firstDomainCred
-            DependsOn            = "[WaitForADDomain]waitFirstDomain"
+            PsDscRunAsCredential = $bastDomainCred
+            DependsOn            = "[WaitForADDomain]waitBastDomain"
         }
 
-        Script "nakia constrained Delegation Set"
+        Script "Nakia Comp constrained Delegation Set"
         {
             SetScript = {
-                $comp = (Get-ADComputer -Identity "nakia").DistinguishedName
-                Set-ADObject -Identity $comp -Add @{"msDS-AllowedToDelegateTo" = @("HOST/baku-dc","HOST/baku-dc.bast.land","HOST/baku-dc.bast.land/bast.land")}
+                $comp = (Get-ADComputer -Identity "Nakia").DistinguishedName
+                Set-ADObject -Identity $comp -Add @{"msDS-AllowedToDelegateTo" = @("HOST/Baku-DC","HOST/Baku-DC.Bast.land","HOST/Baku-DC.bast.land/bast.land")}
             }
             TestScript = { 
                 $false 
             }
             GetScript = { 
-                @{ Result = (Get-ADComputer "nakia" ) } 
+                @{ Result = (Get-ADComputer "Nakia" ) } 
             }
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
 
         Script DisableSMBSign 
@@ -569,12 +568,12 @@ configuration land {
         }
     }
 
-    Node "UserServer" {
+    Node "Nakia" {
         
         WaitForAll DC
         {
-            ResourceName      = '[ADUser]asrep'
-            NodeName          = 'baku-dc'
+            ResourceName      = '[ADUser]Knkrumah'
+            NodeName          = 'Baku-DC'
             RetryIntervalSec  = 60
             RetryCount        = 15
         }
@@ -594,16 +593,16 @@ configuration land {
             Name   = "Domain"
         }
         
-        User localuser {
+        User landuser {
             Ensure = "Present"
-            UserName = "local-user"
+            UserName = "land-user"
             Password = $DomainCred
         }
 
-        Group Administrators {
+        Group Pantheon {
             GroupName = "Administrators"
-            MembersToInclude = "local-user"
-            DependsOn = "[User]localuser"
+            MembersToInclude = "land-user"
+            DependsOn = "[User]landuser"
         }
 
         DnsServerAddress DnsServerAddress
@@ -612,7 +611,7 @@ configuration land {
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             Validate       = $false
-            DependsOn      = "[Group]Administrators"
+            DependsOn      = "[Group]Pantheon"
         }
 
         Script DisableDefender
@@ -662,28 +661,28 @@ configuration land {
             }
         }
 
-        WaitForADDomain waitFirstDomain {
-            DomainName = $firstDomainName
-            Credential = $firstDomainCred
+        WaitForADDomain waitBastDomain {
+            DomainName = $bastDomainName
+            Credential = $bastDomainCred
             WaitForValidCredentials = $true
             WaitTimeout = 300
             DependsOn = "[DnsServerAddress]DnsServerAddress"
         }
 
         Computer JoinDomain {
-            Name = "nakia"
-            DomainName = $firstDomainName
-            Credential = $firstDomainCred
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Name = "Nakia"
+            DomainName = $bastDomainName
+            Credential = $bastDomainCred
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
     }
 
-    Node "UserWorkstation" {
+    Node "Ramonda" {
         
         WaitForAll DC
         {
-            ResourceName      = '[ADUser]asrep'
-            NodeName          = 'baku-dc'
+            ResourceName      = '[ADUser]Knkrumah'
+            NodeName          = 'Baku-DC'
             RetryIntervalSec  = 60
             RetryCount        = 15
         }
@@ -703,16 +702,16 @@ configuration land {
             Name   = "Domain"
         }
         
-        User localuser {
+        User landuser {
             Ensure = "Present"
-            UserName = "local-user"
+            UserName = "land-user"
             Password = $DomainCred
         }
 
-        Group Administrators {
+        Group Pantheon {
             GroupName = "Administrators"
-            MembersToInclude = "local-user"
-            DependsOn = "[User]localuser"
+            MembersToInclude = "land-user"
+            DependsOn = "[User]landuser"
         }
 
         DnsServerAddress DnsServerAddress
@@ -721,7 +720,7 @@ configuration land {
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             Validate       = $false
-            DependsOn      = "[Group]Administrators"
+            DependsOn      = "[Group]Pantheon"
         }
 
         Script DisableDefender
@@ -785,26 +784,26 @@ configuration land {
             }
         }
 
-        WaitForADDomain waitFirstDomain {
-            DomainName = $firstDomainName
-            Credential = $firstDomainCred
+        WaitForADDomain waitBastDomain {
+            DomainName = $bastDomainName
+            Credential = $bastDomainCred
             WaitForValidCredentials = $true
             WaitTimeout = 300
             DependsOn = "[DnsServerAddress]DnsServerAddress"
         }
 
         Computer JoinDomain {
-            Name = "ramonda"
-            DomainName = $firstDomainName
-            Credential = $firstDomainCred
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            Name = "Ramonda"
+            DomainName = $bastDomainName
+            Credential = $bastDomainCred
+            DependsOn = "[WaitForADDomain]waitBastDomain"
         }
     }
 
-    Node "Second" {
+    Node "Wakanda" {
 
         Computer NewName {
-            Name = "challa-dc"
+            Name = "Challa-DC"
         }
         
         WindowsFeature ADDSInstall {
@@ -832,20 +831,20 @@ configuration land {
             Name   = "Domain"
         }
 
-        User AdminUser {
+        User Bashenga {
             Ensure = "Present"
             UserName = $domainCred.UserName
             Password = $domainCred
         }
 
-        Group Administrators {
+        Group Pantheon {
             GroupName = "Administrators"
             MembersToInclude = $domainCred.UserName
-            DependsOn = "[User]AdminUser"
+            DependsOn = "[User]Bashenga"
         }
         
         ADDomain CreateDC {
-            DomainName = $secondDomainName
+            DomainName = $wakandaDomainName
             Credential = $domainCred
             SafemodeAdministratorPassword = $safemodeAdministratorCred
             DatabasePath = 'C:\NTDS'
@@ -853,8 +852,8 @@ configuration land {
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
 
-        WaitForADDomain waitSecondDomain {
-            DomainName = $secondDomainName
+        WaitForADDomain waitWakandaDomain {
+            DomainName = $wakandaDomainName
             DependsOn = "[ADDomain]CreateDC"
         }
 
@@ -864,14 +863,14 @@ configuration land {
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             Validate       = $false
-            DependsOn = "[WaitForADDomain]waitSecondDomain"
+            DependsOn = "[WaitForADDomain]waitWakandaDomain"
         }
 
         Script SetConditionalForwardedZone {
             GetScript = { return @{ } }
 
             TestScript = {
-                $zone = Get-DnsServerZone -Name $using:firstDomainName -ErrorAction SilentlyContinue
+                $zone = Get-DnsServerZone -Name $using:bastDomainName -ErrorAction SilentlyContinue
                 if ($zone -ne $null -and $zone.ZoneType -eq 'Forwarder') {
                     return $true
                 }
@@ -880,27 +879,27 @@ configuration land {
             }
 
             SetScript = {
-                $ForwardDomainName = $using:firstDomainName
+                $ForwardDomainName = $using:bastDomainName
                 $IpAddresses = @("10.0.1.100")
                 Add-DnsServerConditionalForwarderZone -Name "$ForwardDomainName" -ReplicationScope "Domain" -MasterServers $IpAddresses
             }
         }
 
-        ADGroup DomainAdmin {
+        ADGroup Orisha {
             Ensure = "Present"
             GroupName = "Domain Admins"
             MembersToInclude = $domainCred.UserName
-            DependsOn = "[WaitForADDomain]waitSecondDomain"
+            DependsOn = "[WaitForADDomain]waitWakandaDomain"
         }
 
-        ADUser 'wakandan'
+        ADUser 'Wakandan'
         {
             Ensure     = 'Present'
-            UserName   = 'wakandan'
-            Password   = (New-Object System.Management.Automation.PSCredential("wakandan", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
+            UserName   = 'Wakandan'
+            Password   = (New-Object System.Management.Automation.PSCredential("Wakandan", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'wakanda.land'
-            Path       = 'CN=Users,DC=second,DC=local'
-            DependsOn = "[WaitForADDomain]waitSecondDomain"
+            Path       = 'CN=Users,DC=wakanda,DC=land'
+            DependsOn = "[WaitForADDomain]waitWakandaDomain"
         }
 
         ADUser 'Plumumba'
@@ -909,9 +908,9 @@ configuration land {
             UserName   = 'Plumumba'
             Password   = (New-Object System.Management.Automation.PSCredential("Plumumba", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'wakanda.land'
-            Path       = 'CN=Users,DC=second,DC=local'
+            Path       = 'CN=Users,DC=wakanda,DC=land'
             ServicePrincipalNames = "MSSQL/sql.wakanda.land"
-            DependsOn = "[WaitForADDomain]waitSecondDomain"
+            DependsOn = "[WaitForADDomain]waitWakandaDomain"
         }
 
         ADUser 'Knkrumah'
@@ -920,25 +919,25 @@ configuration land {
             UserName   = 'Knkrumah'
             Password   = (New-Object System.Management.Automation.PSCredential("Knkrumah", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force)))
             DomainName = 'wakanda.land'
-            Path       = 'CN=Users,DC=second,DC=local'
-            DependsOn = "[WaitForADDomain]waitSecondDomain"
+            Path       = 'CN=Users,DC=wakanda,DC=land'
+            DependsOn = "[WaitForADDomain]waitWakandaDomain"
         }
 
-        WaitForADDomain waitFirstDomain {
-            DomainName = $firstDomainName
-            Credential = $firstDomainCred
+        WaitForADDomain waitBastDomain {
+            DomainName = $bastDomainName
+            Credential = $bastDomainCred
             WaitTimeout = 600
             RestartCount = 2
             DependsOn = "[Script]SetConditionalForwardedZone"
         }
 
         ADDomainTrust DomainTrust {
-            TargetDomainName = $firstDomainName
-            TargetCredential = $firstDomainCred
+            TargetDomainName = $bastDomainName
+            TargetCredential = $bastDomainCred
             TrustType = "External"
             TrustDirection = "Bidirectional"
-            SourceDomainName = $secondDomainName
-            DependsOn = "[WaitForADDomain]waitFirstDomain"
+            SourceDomainName = $wakandaDomainName
+            DependsOn = "[WaitForADDomain]waitBastDomain"
             Ensure = "Present"
         }
 
@@ -981,14 +980,14 @@ configuration land {
 $ConfigData = @{
     AllNodes = @(
         @{
-            Nodename                    = "First"
-            Role                        = "First DC"
+            Nodename                    = "Bast"
+            Role                        = "Bast DC"
             RetryCount                  = 0
             RetryIntervalSec            = 0
             PsDscAllowPlainTextPassword = $true
         },
         @{
-            Nodename                    = "UserServer"
+            Nodename                    = "Nakia"
             Role                        = "User Server"
             RetryCount                  = 0
             RetryIntervalSec            = 0
@@ -996,7 +995,7 @@ $ConfigData = @{
             PsDscAllowDomainUser        = $true
         },
         @{
-            Nodename                    = "UserWorkstation"
+            Nodename                    = "Ramonda"
             Role                        = "User Workstation"
             RetryCount                  = 0
             RetryIntervalSec            = 0
@@ -1004,8 +1003,8 @@ $ConfigData = @{
             PsDscAllowDomainUser        = $true
         },
         @{
-            Nodename                    = "Second"
-            Role                        = "Second DC"
+            Nodename                    = "Wakanda"
+            Role                        = "Wakanda DC"
             RetryCount                  = 0
             RetryIntervalSec            = 0
             PsDscAllowPlainTextPassword = $true
@@ -1013,10 +1012,9 @@ $ConfigData = @{
     )
 }
 
-land -ConfigurationData $ConfigData `
-    -firstDomainName "bast.land" `
-    -secondDomainName "wakanda.land" `
-    -domainCred (New-Object System.Management.Automation.PSCredential("admin", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force))) `
-    -safemodeAdministratorCred (New-Object System.Management.Automation.PSCredential("admin", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force))) `
-    -firstDomainCred (New-Object System.Management.Automation.PSCredential("first-admin", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force))) 
-
+Jungle -ConfigurationData $ConfigData `
+    -bastDomainName "bast.land" `
+    -wakandaDomainName "wakanda.land" `
+    -domainCred (New-Object System.Management.Automation.PSCredential("tsankara", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force))) `
+    -safemodeAdministratorCred (New-Object System.Management.Automation.PSCredential("tsankara", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force))) `
+    -bastDomainCred (New-Object System.Management.Automation.PSCredential("bast-tsankara", (ConvertTo-SecureString "DoesntMatter" -AsPlainText -Force))) 

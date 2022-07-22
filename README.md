@@ -1,7 +1,7 @@
 # Wakanda Land
 ![Wakanda Land](WL5.jpg)
 ## Purpose
-Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for automating the process of deploying an Adversarial Simulation lab infrastructure for practicing various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. I just added some additional sprinkles to their work from my other researches.
+Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for automating the process of deploying an Adversarial Simulation land infrastructure for practicing various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. I just added some additional sprinkles to their work from my other researches.
 
 ## Attack Techniques Covered
 - Kerberoasting
@@ -60,12 +60,12 @@ DSC
   - Install-module -name activedirectorydsc
   - Install-module -name networkingdsc
   - Install-module -name ComputerManagementDsc
-2. Update the PowerShell script (adlab.ps1) with the following:
+2. Update the PowerShell script (adland.ps1) with the following:
   - Import-DscResource -ModuleName ActiveDirectoryDsc
   - Import-DscResource -ModuleName NetworkingDsc
   - Import-DscResource -ModuleName ComputerManagementDSC
   - Import-DscResource -ModuleName PSDesiredStateConfiguration
-3. Run the script (```. .\jungle.ps1```) from within the ```dsc``` directory to create the MOF files, which will be dumped into the ```Jungle``` folder 
+3. Run the script (```. .\adland.ps1```) from within the ```dsc``` directory to create the MOF files, which will be dumped into the ```land``` folder 
 
 S3
 Create an S3 bucket for your account and modify the variable in terraform/vars.tf with your bucket name
@@ -80,8 +80,8 @@ Can use this key pair to get the administrator default password from AWS
 
 Once you run the terraform, it will take some time to provision everything, so give it about 30 mins to an hour and you should be good to go.
 ```
-## Running the lab
-You can take the following steps in running the lab (must be ran from the terraform subfolder):
+## Running the land
+You can take the following steps in running the land (must be ran from the terraform subfolder):
 
 ### Initialize terraform
 ```
@@ -117,8 +117,8 @@ terraform apply --auto-approve
 - Once on Covenant C2, create a Listener and ensure the BindAddress and ConnectionAddress are set to the Kali's internal IP address
 - Create a PowerShell launcher
 - Open a new terminal window (or tab) in Kali and change directory into /toolz/impacket/examples (cd /toolz/impacket/examples) 
-- Use Impacket's WMIEXEC script to obtain a shell on a victim's machine, simulating an initial foothold within the Active Directory environment (python3 wmiexec.py bast/wakandan:Password\@1@10.0.1.53)
-- Copy the PowerShell launcher from Covenant and paste it in the shell obtained on the victim's machine (e.g. 10.0.1.53)
+- Use Impacket's WMIEXEC script to obtain a shell on a victim's machine, simulating an initial foothold within the Active Directory environment (python3 wmiexec.py first/wakandan:Password\@1@10.0.1.50)
+- Copy the PowerShell launcher from Covenant and paste it in the shell obtained on the victim's machine (e.g. 10.0.1.50)
 - Confirm you have a connection (Grunt) back to your Covenant C2 framework
 - You can continue with other attack techniques via Covenant
 ```
@@ -128,9 +128,9 @@ terraform destroy --auto-approve
 ```
 ## Credits
 ```
-- XPN: https://github.com/xpn/DemoLab
-- MDSec: https://www.mdsec.co.uk/2020/04/designing-the-adversary-simulation-lab/
-- Phil Keeble: https://github.com/PhilKeeble/AWS-RedTeam-ADLab
+- XPN: https://github.com/xpn/Demoland
+- MDSec: https://www.mdsec.co.uk/2020/04/designing-the-adversary-simulation-land/
+- Phil Keeble: https://github.com/PhilKeeble/AWS-RedTeam-ADland
 - Splunk: https://github.com/splunk/attack_range
 - oehrlis: https://github.com/oehrlis/guacamole
 - https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS

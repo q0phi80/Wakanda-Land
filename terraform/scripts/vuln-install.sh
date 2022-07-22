@@ -86,7 +86,7 @@ then
     stop
 elif [[ $1 == "list" ]]
 then
-    echo -e "Listing all available Docker containers from vulhub."
+    echo -e "Listing all availandle Docker containers from vulhub."
     
 else
     echo -e "\n\e[31m\e[1mVulnerables\e[0m: a quick and simple way of starting multiple Docker containers from vulhub.\n"
