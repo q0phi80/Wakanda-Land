@@ -31,9 +31,9 @@ terraform/keys/*
 terraform/.terraform.lock.hcl
 terraform/.terraform/
 dsc/Jungle/*
+dsc/adlab.ps1
 terraform/terraform*
 terraform/.terraform*
 
 .env
 NOTES
-dsc/Lab/*
