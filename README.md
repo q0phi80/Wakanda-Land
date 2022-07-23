@@ -137,6 +137,14 @@ aws ec2 describe-instances --query 'Reservations[].Instances[].[Tags[?Key==`Name
 ```
 terraform destroy --auto-approve
 ```
+### Creat new workspace
+```
+terraform workspace new example
+```
+## List workspace
+```
+terraform workspace list
+```
 ## Credits
 ```
 - XPN: https://github.com/xpn/Demoland
@@ -149,4 +157,5 @@ terraform destroy --auto-approve
 - https://www.infracost.io/docs/#1-install-infracost
 - https://github.com/mandiant/commando-vm/blob/master/packages.csv
 - https://github.com/paidem/guacozy
+- https://www.terraform.io/cli
 ```
