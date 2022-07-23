@@ -1,14 +1,19 @@
 # Wakanda Land
-![Wakanda Land](./img/WL5.jpg)
+<p align="center">
+  <img src="https://github.com/q0phi80/Wakanda-Land/raw/main/img/WL5.jpg" width="650" title="Wakanda Land">
+</p>
+
 ## Purpose
 Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for automating the process of deploying an Adversarial Simulation land infrastructure for practicing various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. I just added some additional sprinkles to their work from my other researches.
 
 ## Demo
 [A short demo video](https://youtu.be/gpCknMZw7vA) which demonstrates deploying the lab, quick test to ensure it functions and how to destroy it once you are done.
 
-[![Wakanda Land Demo](https://img.youtube.com/vi/gpCknMZw7vA/1.jpg width="50%")](https://youtu.be/gpCknMZw7vA)
-
-[<img src="https://github.com/q0phi80/Wakanda-Land/raw/main/img/WL5.jpg" width="50%">]((https://youtu.be/gpCknMZw7vA "Wakanda Land Demo")
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=https://youtu.be/gpCknMZw7vA" target="_blank">
+<p align="center">
+ <img src="http://img.youtube.com/vi/gpCknMZw7vA/0.jpg" alt="Wakanda Land Demo" width="350" height="220" border="10" />
+ </p>
+</a>
 
 ## Attack Techniques Covered
 - Kerberoasting
