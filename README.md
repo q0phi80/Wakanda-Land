@@ -8,6 +8,8 @@ Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for auto
 
 [![Wakanda Land Demo](https://img.youtube.com/vi/gpCknMZw7vA/1.jpg)](https://youtu.be/gpCknMZw7vA)
 
+[!](https://gifs.com/gif/wakanda-land-OgRlwG)
+
 ## Attack Techniques Covered
 - Kerberoasting
 - ASRepRoasting
@@ -103,6 +105,10 @@ terraform plan
 ### Deploy the environment
 ```
 terraform apply --auto-approve
+```
+### Verify with AWS that the assets have been created
+```
+aws ec2 describe-instances --query 'Reservations[].Instances[].[Tags[?Key==`Name`].Value,InstanceType,PublicIpAddress,PrivateIpAddress]' --output json
 ```
 ### Connect to the environment
 ```
