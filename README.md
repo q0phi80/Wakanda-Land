@@ -6,9 +6,9 @@ Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for auto
 ## Demo
 [A short demo video](https://youtu.be/gpCknMZw7vA) which demonstrates deploying the lab, quick test to ensure it functions and how to destroy it once you are done.
 
-[![Wakanda Land Demo](https://img.youtube.com/vi/gpCknMZw7vA/1.jpg)](https://youtu.be/gpCknMZw7vA)
+[![Wakanda Land Demo](https://img.youtube.com/vi/gpCknMZw7vA/1.jpg width="50%")](https://youtu.be/gpCknMZw7vA)
 
-[!](https://gifs.com/gif/wakanda-land-OgRlwG)
+[<img src="https://github.com/q0phi80/Wakanda-Land/raw/main/img/WL5.jpg" width="50%">]((https://youtu.be/gpCknMZw7vA "Wakanda Land Demo")
 
 ## Attack Techniques Covered
 - Kerberoasting
