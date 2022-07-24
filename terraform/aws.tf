@@ -202,7 +202,7 @@ resource "aws_instance" "ramonda" {
     }
   }
 
-# Join the Windows 10 box to the domain bast
+  # Join the Windows 10 box to the domain bast
   provisioner "remote-exec" {
     inline = [
       "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
@@ -406,20 +406,22 @@ resource "null_resource" "guacozy-server-setup" {
   }
 
   provisioner "file" {
+    source      = "./files/playbook.yml"
+    destination = "/tmp/playbook.yml"
+  }
+
+  provisioner "file" {
     source      = "./files/docker-compose.yml"
     destination = "/tmp/docker-compose.yml"
   }
 
-  provisioner "file" {
-    source      = "./scripts/guacozy.sh"
-    destination = "/tmp/guacozy.sh"
-  }
-
   provisioner "remote-exec" {
     inline = [
-      "sleep 120",
-      "sudo chmod +x /tmp/guacozy.sh",
-      "sudo /tmp/guacozy.sh"
+      "sleep 10",
+      "cd /tmp/",
+      "ansible-playbook playbook.yml",
+      /*       "sudo chmod +x /tmp/guacozy.sh",
+      "sudo /tmp/guacozy.sh" */
     ]
     on_failure = continue
   }
