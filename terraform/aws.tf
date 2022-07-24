@@ -386,16 +386,29 @@ resource "null_resource" "guac-server-setup" {
     destination = "/tmp/guac-setup.sh"
   }
 
+  provisioner "file" {
+    source      = "./files/playbook.yml"
+    destination = "/tmp/playbook.yml"
+  }
+
+  provisioner "file" {
+    source      = "./files/docker-compose.yml"
+    destination = "/tmp/docker-compose.yml"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sleep 10",
       "sudo chmod +x /tmp/guac-setup.sh",
       "sudo /tmp/guac-setup.sh",
+      "cd /tmp/",
+      "sudo docker-compose -f docker-compose.yml up -d",
     ]
+    on_failure = fail
   }
 }
 
-resource "null_resource" "guacozy-server-setup" {
+/* resource "null_resource" "guacozy-server-setup" {
   depends_on = [
     null_resource.guac-server-setup
   ]
@@ -423,12 +436,12 @@ resource "null_resource" "guacozy-server-setup" {
       "sleep 10",
       "cd /tmp/",
       "ansible-playbook playbook.yml",
-/*       "sudo chmod +x /tmp/guacozy.sh",
-      "sudo /tmp/guacozy.sh" */
+      "sudo chmod +x /tmp/guacozy.sh",
+      "sudo /tmp/guacozy.sh"
     ]
     on_failure = continue
   }
-}
+} */
 
 # Kali Linux Installation and setup
 resource "aws_instance" "ulysses" {

@@ -1,5 +1,5 @@
 # Join the Windows 10 to the domain
-Start-Sleep -Seconds 300
+Start-Sleep -Seconds 180
 $domain = "bast.land"
 $password = ConvertTo-SecureString "Password@1" -asPlainText -Force
 $username = "tsankara@bast.land"
