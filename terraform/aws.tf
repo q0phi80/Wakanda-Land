@@ -1,5 +1,4 @@
-# Basic AWS configuration which will grab our keys from the AWS CLI
-# If you are not using the keys in the default profile of aws cli, then change below to the profile name 
+# AWS configuration to grab our keys from the AWS CLI 
 provider "aws" {
   profile = "default"
   region  = "us-east-1"
@@ -407,41 +406,6 @@ resource "null_resource" "guac-server-setup" {
     on_failure = fail
   }
 }
-
-/* resource "null_resource" "guacozy-server-setup" {
-  depends_on = [
-    null_resource.guac-server-setup
-  ]
-  connection {
-    type        = "ssh"
-    host        = aws_instance.guac-server.public_ip
-    user        = var.SSH_USER
-    port        = "22"
-    private_key = file(var.PATH_TO_PRIVATE_KEY)
-    agent       = false
-  }
-  
-  provisioner "file" {
-    source      = "./files/playbook.yml"
-    destination = "/tmp/playbook.yml"
-  }
-
-  provisioner "file" {
-    source      = "./files/docker-compose.yml"
-    destination = "/tmp/docker-compose.yml"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sleep 10",
-      "cd /tmp/",
-      "ansible-playbook playbook.yml",
-      "sudo chmod +x /tmp/guacozy.sh",
-      "sudo /tmp/guacozy.sh"
-    ]
-    on_failure = continue
-  }
-} */
 
 # Kali Linux Installation and setup
 resource "aws_instance" "ulysses" {
