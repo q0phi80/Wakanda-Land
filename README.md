@@ -11,7 +11,7 @@ Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for auto
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=https://youtu.be/gpCknMZw7vA" target="_blank">
 <p align="center">
- <img src="http://img.youtube.com/vi/gpCknMZw7vA/0.jpg" alt="Wakanda Land Demo" width="350" height="220" border="10" />
+ <img src="http://img.youtube.com/vi/gpCknMZw7vA/0.jpg" alt="Wakanda Land Demo" width="350" height="250" border="10" />
  </p>
 </a>
 
