@@ -152,9 +152,9 @@ terraform workspace list
 ```
 ## Credits
 ```
-- XPN: https://github.com/xpn/Demoland
-- MDSec: https://www.mdsec.co.uk/2020/04/designing-the-adversary-simulation-land/
-- Phil Keeble: https://github.com/PhilKeeble/AWS-RedTeam-ADland
+- XPN: https://github.com/xpn/Demolab
+- MDSec: https://www.mdsec.co.uk/2020/04/designing-the-adversary-simulation-lab/
+- Phil Keeble: https://github.com/PhilKeeble/AWS-RedTeam-ADlab
 - Splunk: https://github.com/splunk/attack_range
 - oehrlis: https://github.com/oehrlis/guacamole
 - https://github.com/splunk/attack_range/wiki/Upload-Windows-10-AMI-to-AWS
