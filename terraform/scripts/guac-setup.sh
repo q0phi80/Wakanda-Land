@@ -7,7 +7,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 apt install git -y
 apt-get update -y
-apt install -y python3-pip
+apt install -y python3-pip ansible
 sudo curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 

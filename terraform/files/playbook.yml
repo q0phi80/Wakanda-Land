@@ -1,0 +1,13 @@
+---
+- become: true
+  hosts: localhost
+  name: Run Guacozy docker
+  tasks:
+    # - copy:
+    #     src: ./files/docker-compose.yml
+    #     dest: /tmp/docker-compose.yml
+
+    - name: Change into the tmp folder and run docker-compose
+      become: true
+      shell: sudo docker-compose -f /tmp/docker-compose.yml up -d
+      #chdir: /tmp/

@@ -202,7 +202,7 @@ resource "aws_instance" "ramonda" {
     }
   }
 
-  # Join the Windows 10 box to the domain bast
+# Join the Windows 10 box to the domain bast
   provisioner "remote-exec" {
     inline = [
       "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
@@ -396,6 +396,9 @@ resource "null_resource" "guac-server-setup" {
 }
 
 resource "null_resource" "guacozy-server-setup" {
+  depends_on = [
+    null_resource.guac-server-setup
+  ]
   connection {
     type        = "ssh"
     host        = aws_instance.guac-server.public_ip
@@ -404,7 +407,7 @@ resource "null_resource" "guacozy-server-setup" {
     private_key = file(var.PATH_TO_PRIVATE_KEY)
     agent       = false
   }
-
+  
   provisioner "file" {
     source      = "./files/playbook.yml"
     destination = "/tmp/playbook.yml"
@@ -420,7 +423,7 @@ resource "null_resource" "guacozy-server-setup" {
       "sleep 10",
       "cd /tmp/",
       "ansible-playbook playbook.yml",
-      /*       "sudo chmod +x /tmp/guacozy.sh",
+/*       "sudo chmod +x /tmp/guacozy.sh",
       "sudo /tmp/guacozy.sh" */
     ]
     on_failure = continue
