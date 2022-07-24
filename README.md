@@ -163,4 +163,6 @@ terraform workspace list
 - https://github.com/mandiant/commando-vm/blob/master/packages.csv
 - https://github.com/paidem/guacozy
 - https://www.terraform.io/cli
+- https://owasp.org/www-project-juice-shop/
+- https://github.com/vulhub/vulhub.git
 ```
