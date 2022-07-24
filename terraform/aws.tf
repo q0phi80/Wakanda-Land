@@ -72,7 +72,7 @@ resource "aws_vpc_dhcp_options_association" "bast-dhcp-assoc" {
   dhcp_options_id = aws_vpc_dhcp_options.bast-dhcp.id
 }
 
-# Domain Controller of the "bast.land" domain
+# Domain Controller of the bast domain
 resource "aws_instance" "baku-dc" {
   ami                         = data.aws_ami.latest-windows-server.image_id
   instance_type               = "t2.small"
@@ -115,7 +115,7 @@ resource "aws_instance" "nakia" {
 # A Windows 10 Pro development host providing RDP access for crafting and testing payloads
 resource "aws_instance" "ramonda" {
   ami                         = data.aws_ami.windows-client.image_id
-  instance_type               = "t2.medium"
+  instance_type               = "t3.medium"
   key_name                    = aws_key_pair.terraformkey.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.bast-vpc-subnet.id
@@ -131,7 +131,7 @@ resource "aws_instance" "ramonda" {
     aws_security_group.bast-sg.id,
   ]
 
-  # Connect to the Win 10 with the Local Admin account and then activate the default Administrator account
+  # Connect to the Win 10 with the Local Admin account and then activate the default Local Administrator account
   provisioner "remote-exec" {
     inline = [
       "net user Administrator /active:yes",
@@ -183,48 +183,13 @@ resource "aws_instance" "ramonda" {
     }
   }
 
-  # Run the PowerShell scripts on the Remote Win 10 box to install tools
+  # Execute the PowerShell scripts on the Windows box to install tools, join Win 10 the bast domain and then reboot the box
   provisioner "remote-exec" {
     inline = [
-      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/rt-toolz.ps1"
+      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/rt-toolz.ps1",
+      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1",
+      "powershell -ExecutionPolicy Bypass Restart-Computer -Force",
     ]
-
-    connection {
-      type     = "winrm"
-      user     = "Administrator"
-      password = var.WinRM_PASSWORD
-      host     = aws_instance.ramonda.public_ip
-      port     = 5985
-      insecure = true
-      https    = false
-      timeout  = "7m"
-    }
-  }
-
-# Join the Windows 10 box to the domain bast
-  provisioner "remote-exec" {
-    inline = [
-      "powershell -ExecutionPolicy Bypass -File C:/Windows/Temp/join-domain.ps1"
-    ]
-
-    connection {
-      type     = "winrm"
-      user     = "Administrator"
-      password = var.WinRM_PASSWORD
-      host     = aws_instance.ramonda.public_ip
-      port     = 5985
-      insecure = true
-      https    = false
-      timeout  = "7m"
-    }
-  }
-
-  # Once the Win 10 box is joined to the domain, it will need to be restarted. Using this as a backup to make sure the box actually do reboot
-  provisioner "remote-exec" {
-    inline = [
-      "powershell -ExecutionPolicy Bypass Restart-Computer -Force"
-    ]
-    on_failure = continue
 
     connection {
       type     = "winrm"
@@ -330,7 +295,7 @@ resource "null_resource" "soninke-setup" {
   }
 }
 
-# Domain Controller of the "wakanda.land" domain
+# Domain Controller of the wakanda domain
 resource "aws_instance" "challa-dc" {
   ami                         = data.aws_ami.latest-windows-server.image_id
   instance_type               = "t2.small"
@@ -350,7 +315,7 @@ resource "aws_instance" "challa-dc" {
   ]
 }
 
-# Guacamole Server providing a dashboard access to Kali and Windows boxes for attacks and developments
+# Guacamole Server providing a dashboard access to Kali and Windows 10
 resource "aws_instance" "guac-server" {
   ami                         = data.aws_ami.latest-debian.image_id
   instance_type               = "t2.small"
@@ -383,11 +348,6 @@ resource "null_resource" "guac-server-setup" {
   provisioner "file" {
     source      = "./scripts/guac-setup.sh"
     destination = "/tmp/guac-setup.sh"
-  }
-
-  provisioner "file" {
-    source      = "./files/playbook.yml"
-    destination = "/tmp/playbook.yml"
   }
 
   provisioner "file" {
@@ -777,5 +737,4 @@ resource "aws_ssm_association" "ramonda" {
     MofsToApply    = "s3:${var.SSM_S3_BUCKET}:Jungle/Ramonda.mof"
     RebootBehavior = "Immediately"
   }
-
 }
