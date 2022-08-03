@@ -4,7 +4,7 @@
 </p>
 
 ## Purpose
-Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for automating the process of deploying an Adversarial Simulation land infrastructure for practicing various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. I just added some additional sprinkles to their work from my other researches.
+Wakanda Land is a Cyber Range deployment tool that uses ```terraform``` for automating the process of deploying an Adversarial Simulation land infrastructure, for practicing various offensive attacks. This project inherits from other people's work in the Cybersecurity Community and due credit has been provided in the Credit Section. I just added some additional sprinkles to their work from my other researches.
 
 ## Demo
 [A short demo video](https://youtu.be/gpCknMZw7vA) which demonstrates deploying the lab, quick test to ensure it functions and how to destroy it once you are done.
@@ -39,12 +39,12 @@ The deployment of Wakanda Land environment consist of:
 - Two Subnets
 - Guacamole Server
   - *This provides dashboard access to Kali GUI and Windows RDP instances*
-  - *The Kali GUI, Windows RDP and the user accounts used to log into these instances are already backed into the deployment process*
-  - *To log into the Guacamole dashboard with the ```guacadmin``` account, you need to SSH into the Guacamole server using the public IP address (which is displayed after the deployment is complete) and then change into the ```guacamole``` directory and then type ```cat .env``` for the password (the ```guacadmin``` password is randomnly generated and saved as an environment variable)*
+  - *This runs two variations of dashboards (one is vanilla Apache Guacamole and the second one is a customized Apache Guacamole*
+  - *The Kali GUI, Windows RDP and the user accounts used to log into the instance in the Apache Guacamole are already backed into the deployment process*
 - Windows Domain Controller for the Child Domain
 - Windows Domain Controller for the Parent Domain
 - Windows Server in the Child Domain
-- Windows 10 Pro in the Child Domain - had to create a custom AMI image for this one
+- Windows 10 Pro in the Child Domain - Customized AMI image for this one
 - Kali Machine - a directory called ```toolz``` is created on this box where Impacket and Covenant C2 are downloaded into that folder, so its just a matter of running Covenant once you are authenticated into Kali
 - Debian Server serving as Web Server 1 - OWASP's Juice Shop running on this one
 - Debian Server serving as Web Server 2 - Several vulnerable applications running on this one
