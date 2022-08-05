@@ -39,7 +39,7 @@ The deployment of Wakanda Land environment consist of:
 - Two Subnets
 - Guacamole Server
   - *This provides dashboard access to Kali GUI and Windows RDP instances*
-  - *This runs two variations of dashboards (one is vanilla Apache Guacamole and the second one is a customized Apache Guacamole*
+  - *This runs two variations of dashboards (one is vanilla Apache Guacamole and the second one is a customized Apache Guacamole)*
   - *The Kali GUI, Windows RDP and the user accounts used to log into the instance in the Apache Guacamole are already backed into the deployment process*
 - Windows Domain Controller for the Child Domain
 - Windows Domain Controller for the Parent Domain
@@ -72,12 +72,12 @@ DSC
   - Install-module -name activedirectorydsc
   - Install-module -name networkingdsc
   - Install-module -name ComputerManagementDsc
-2. Update the PowerShell script (adland.ps1) with the following:
+2. Update the PowerShell script (jungle.ps1) with the following:
   - Import-DscResource -ModuleName ActiveDirectoryDsc
   - Import-DscResource -ModuleName NetworkingDsc
   - Import-DscResource -ModuleName ComputerManagementDSC
   - Import-DscResource -ModuleName PSDesiredStateConfiguration
-3. Run the script (```. .\adland.ps1```) from within the ```dsc``` directory to create the MOF files, which will be dumped into the ```land``` folder 
+3. Run the script (```. .\jungle.ps1```) from within the ```dsc``` directory to create the MOF files, which will be dumped into the ```Jungle``` folder 
 
 S3
 Create an S3 bucket for your account and modify the variable in terraform/vars.tf with your bucket name
@@ -90,7 +90,7 @@ Store the SSH Public Key file within ./terraform/keys/terraform-key.pub
 Update the file in the vars.tf to point to that public key (which will assign it to the created EC2 instances)
 Can use this key pair to get the administrator default password from AWS
 
-Once you run the terraform, it will take some time to provision everything, so give it about 30 mins to an hour and you should be good to go.
+Once you run the terraform, it will take some time to provision everything, so give it about 45 mins to an hour and you should be good to go.
 ```
 ## Running the land
 You can take the following steps in running the land (must be ran from the terraform subfolder):
@@ -107,7 +107,7 @@ terraform validate
 ```
 terraform plan
 ```
-### Deploy the environment
+### Deploy the land
 ```
 terraform apply --auto-approve
 ```
@@ -115,7 +115,7 @@ terraform apply --auto-approve
 ```
 aws ec2 describe-instances --query 'Reservations[].Instances[].[Tags[?Key==`Name`].Value,InstanceType,PublicIpAddress,PrivateIpAddress]' --output json
 ```
-### Connect to the environment
+### Connect to the land
 ```
 - SSH into the Guacamole server (g.e. ssh -i terraformkey.pem admin@guac-server-ip)
 - Change directory into the guacamole directory on the server (cd guacamole)
@@ -138,7 +138,7 @@ aws ec2 describe-instances --query 'Reservations[].Instances[].[Tags[?Key==`Name
 - Confirm you have a connection (Grunt) back to your Covenant C2 framework
 - You can continue with other attack techniques via Covenant
 ```
-### Destroy the environment
+### Destroy the land
 ```
 terraform destroy --auto-approve
 ```
