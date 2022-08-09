@@ -167,7 +167,6 @@ data "aws_ami" "windows-client" {
   filter {
     name   = "name"
     values = ["import-ami-07b944fe8b0a37493"]
-    #values = ["import-ami-06104ffaf2a9d8fda"]
   }
 
   most_recent = true
