@@ -1,7 +1,7 @@
 # Join the Windows 10 to the domain
 
 # First, wait for 3 minutes (you can manipulate this for give the host some briefing room after installing toolz)
-Start-Sleep -Seconds 180
+Start-Sleep -Seconds 60
 $domain = "bast.land"
 $password = ConvertTo-SecureString "Password@1" -asPlainText -Force
 $username = "tsankara@bast.land"
