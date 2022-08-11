@@ -33,9 +33,10 @@ terraform/.terraform/
 dsc/Jungle/*
 terraform/terraform*
 terraform/.terraform*
-terraform/plan*
+terraform/plan
 terraform/get-docker.sh
 terraform/infracost-base.json
-
+terraform/.infracost/*
+terraform/terraform.tfstate*
 .env
 NOTES
