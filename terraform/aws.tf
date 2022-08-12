@@ -163,7 +163,7 @@ resource "aws_instance" "ramonda" {
       port     = 5985
       insecure = true
       https    = false
-      timeout  = "7m"
+      timeout  = "15m"
     }
   }
 
@@ -179,7 +179,7 @@ resource "aws_instance" "ramonda" {
       port     = 5985
       insecure = true
       https    = false
-      timeout  = "7m"
+      timeout  = "15m"
     }
   }
 
@@ -199,12 +199,12 @@ resource "aws_instance" "ramonda" {
       port     = 5985
       insecure = true
       https    = false
-      timeout  = "7m"
+      timeout  = "15m"
     }
   }
 }
 
-# 1st Web Server in the bast domain
+# 1st Web Server in the bast subnet
 resource "aws_instance" "okoye" {
   ami                         = data.aws_ami.latest-debian.image_id
   instance_type               = "t2.small"
@@ -247,7 +247,7 @@ resource "null_resource" "okoye-setup" {
   }
 }
 
-# A 2nd Web Server in the bast domain
+# A 2nd Web Server in the bast subnet
 resource "aws_instance" "soninke" {
   ami                         = data.aws_ami.latest-debian.image_id
   instance_type               = "t2.small"

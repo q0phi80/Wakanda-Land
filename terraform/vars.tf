@@ -71,7 +71,7 @@ variable "CHALLA_DC_IP" {
 }
 
 variable "PUBLIC_DNS" {
-  default = "1.1.1.1"
+  default = "1.1.1.1,8.8.8.8"
 }
 
 variable "MANAGEMENT_IPS" {
@@ -143,12 +143,13 @@ data "aws_ami" "ubuntu" {
 
 # Find Latest Kali
 data "aws_ami" "latest-kali-linux" {
-  most_recent = true
+  #most_recent = true
   owners      = ["679593333241"] # owned by AWS marketplace
 
   filter {
     name   = "name"
-    values = ["kali-linux-2022*"]
+    # values = ["ami-023b8c5033c21d95d"]
+    values = ["kali-linux-2022.3*"]
   }
 
   filter {
